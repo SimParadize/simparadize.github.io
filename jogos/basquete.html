@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#100e0b">
+<title>Quadra Carreira — Simulador de Basquete</title>
+<style>
+:root{--bg:#100e0b;--p:#1b1712;--p2:#282118;--line:#493a28;--text:#fff6e9;--muted:#bcae9b;--accent:#f28a24;--accent2:#ffb347;--green:#49d69a;--red:#f06b62;--blue:#74b8ff;--gold:#f7cf68;--shadow:0 14px 38px #0005}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 85% -5%,#65361333,transparent 30%),var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Arial,sans-serif}
+button,input,select{font:inherit}button{background:var(--p2);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px 13px;cursor:pointer;transition:.15s}button:hover{border-color:var(--accent);transform:translateY(-1px)}button:disabled{opacity:.42;cursor:not-allowed;transform:none}.primary{background:var(--accent);border-color:var(--accent);color:#211205;font-weight:900}.primary:hover{background:var(--accent2);border-color:var(--accent2)}.secondary{background:#31271b}.danger{border-color:#85423b;color:#ff9a8e}.good{border-color:#286e54;color:#77e2b5}.gold{border-color:#82672e;color:var(--gold)}
+.top{position:sticky;top:0;z-index:20;background:#100e0bf2;border-bottom:1px solid var(--line);backdrop-filter:blur(12px);padding:10px 14px}.brand{display:flex;align-items:center;justify-content:space-between;gap:12px}.brandTitle{display:flex;align-items:center;gap:10px}.brandMark{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(145deg,#ffb347,#e56f13);color:#271304;font-weight:1000;font-size:19px;box-shadow:0 5px 18px #f28a2444}.brand h1{font-size:19px;margin:0;letter-spacing:.4px}.brand h1 span{color:var(--accent)}.brandTag{font-size:10px;color:var(--muted);border:1px solid var(--line);border-radius:30px;padding:5px 9px;white-space:nowrap}.navLabel{font-size:9px;color:#8e7c65;letter-spacing:1.7px;font-weight:900;margin:10px 0 5px 2px}nav{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}nav::-webkit-scrollbar{display:none}nav button{min-width:70px;padding:7px 9px;font-size:10px;display:flex;flex-direction:column;align-items:center;gap:2px;white-space:nowrap}nav button span:first-child{font-size:17px}nav button.active{background:var(--accent);color:#211205;border-color:var(--accent);font-weight:900}
+main{max-width:1180px;margin:auto;padding:15px}.page{display:none}.page.active{display:block}.hero{position:relative;overflow:hidden;background:linear-gradient(120deg,#382516,#21180f 63%,#542d13);border:1px solid #825024;border-radius:17px;padding:20px;margin-bottom:14px;box-shadow:var(--shadow)}.hero:after{content:'🏀';position:absolute;right:14px;bottom:-36px;font-size:130px;opacity:.09;transform:rotate(-18deg)}.eyebrow{color:#ffc078;font-size:10px;font-weight:900;letter-spacing:1.8px;text-transform:uppercase}.hero h2{font-size:27px;line-height:1.12;margin:7px 0}.hero p{max-width:700px;color:#e5d2bd;margin:0;line-height:1.5}.card{background:var(--p);border:1px solid var(--line);border-radius:14px;padding:15px;margin-bottom:13px;box-shadow:0 5px 20px #0002}.card h2,.card h3{margin:0 0 9px}.muted{color:var(--muted)}.small{font-size:11px}.tiny{font-size:10px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.stat{background:var(--p2);border:1px solid var(--line);border-radius:12px;padding:12px;min-width:0}.stat label{display:block;color:var(--muted);font-size:11px;margin-bottom:5px}.stat b{font-size:23px;line-height:1}.stat small{display:block;margin-top:5px;color:var(--muted);font-size:10px}.row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.rowStart{display:flex;align-items:center;gap:9px;min-width:0}.pill{display:inline-flex;gap:5px;align-items:center;border:1px solid var(--line);border-radius:30px;padding:4px 9px;font-size:10px;color:var(--muted)}.teamDot{display:inline-block;width:11px;height:11px;border-radius:50%;flex:none}
+.shield{display:inline-grid;place-items:center;width:36px;height:36px;border-radius:10px;font-size:10px;font-weight:1000;color:#fff;letter-spacing:.3px;border:2px solid #ffffff33;box-shadow:0 4px 12px #0005;flex:none;text-shadow:0 1px 2px #0008}
+.shield.lg{width:52px;height:52px;font-size:13px;border-radius:14px}
+.shield.sm{width:28px;height:28px;font-size:8px;border-radius:8px}
+.simBar{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}.bar{height:8px;background:#0d0b08;border:1px solid #443522;border-radius:20px;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:20px}.line{height:1px;background:var(--line);margin:12px 0}.field{display:flex;flex-direction:column;gap:5px;margin:9px 0}.field label{font-size:11px;color:var(--muted)}input,select{background:#100e0b;color:var(--text);border:1px solid var(--line);border-radius:9px;padding:11px;min-width:0;width:100%}.fieldGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.teamOption{background:var(--p2);border:1px solid var(--line);border-radius:11px;padding:11px;cursor:pointer}.teamOption.selected{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset;background:#332316}.teamOption h3{font-size:13px;margin:5px 0}.teamOption p{font-size:10px;color:var(--muted);margin:4px 0}.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.actions button{flex:1 1 auto}.notice{padding:11px 12px;border-left:3px solid var(--accent);background:#332315;border-radius:8px;font-size:12px;line-height:1.5;margin:10px 0}.notice.goodNotice{border-left-color:var(--green);background:#172a20}.notice.warn{border-left-color:var(--gold);background:#302819}.notice.bad{border-left-color:var(--red);background:#301c19}.tableWrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px}table{width:100%;border-collapse:collapse;min-width:540px;font-size:12px}th,td{padding:9px 8px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}th{font-size:10px;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);background:#15110d}tr:last-child td{border-bottom:0}.meRow{background:#382615;font-weight:800}.pos{color:var(--gold);font-weight:900}.green{color:var(--green)}.red{color:var(--red)}.orange{color:var(--accent2)}.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}.tab{padding:8px 11px;font-size:11px}.tab.active{background:var(--accent);color:#211205;border-color:var(--accent);font-weight:900}.matchBanner{background:linear-gradient(120deg,#302316,#17120c);border:1px solid #76502a;border-radius:14px;padding:15px;margin:10px 0}.matchScore{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;text-align:center}.matchScore .teamName{font-size:13px;font-weight:900}.matchScore .score{font-size:30px;font-weight:1000;color:var(--accent2);letter-spacing:1px}.matchScore .sub{font-size:10px;color:var(--muted)}.quarterBar{display:flex;gap:5px;margin:10px 0}.quarterBar i{height:5px;flex:1;border-radius:10px;background:var(--line)}.quarterBar i.done{background:var(--accent)}.quarterBar i.current{background:var(--accent2);box-shadow:0 0 9px #ffb34766}.log{max-height:230px;overflow:auto;padding-right:4px}.log p{font-size:11px;color:#d9cbb8;margin:0;padding:7px 0;border-bottom:1px solid #352a1d;line-height:1.4}.choice{width:100%;text-align:left;display:block;margin:6px 0;padding:11px;background:var(--p2)}.choice b{display:block;font-size:12px;margin-bottom:3px}.choice small{color:var(--muted);font-size:10px;line-height:1.4}.choice.selected{border-color:var(--accent);background:#392718}.footer{text-align:center;color:#8b7b66;font-size:10px;padding:20px}.hidden{display:none!important}.modalBack{position:fixed;inset:0;background:#000c;z-index:60;display:flex;align-items:center;justify-content:center;padding:14px}.modal{width:min(560px,100%);max-height:90vh;overflow:auto;background:var(--p);border:1px solid var(--line);border-radius:16px;padding:17px;box-shadow:var(--shadow)}.modal h2{margin:0 0 8px}.badge{display:inline-block;border:1px solid var(--line);border-radius:30px;padding:4px 8px;font-size:10px;color:var(--muted)}.playerCard{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--p2);border:1px solid var(--line);border-radius:10px;padding:10px;margin:6px 0}.playerCard b{font-size:12px}.playerCard small{display:block;color:var(--muted);font-size:10px}.rating{font-size:20px;font-weight:1000;color:var(--accent2)}.twoCol{display:grid;grid-template-columns:1fr 1fr;gap:10px}.miniCourt{height:130px;border:1px solid #bd7a36;border-radius:10px;background:linear-gradient(90deg,transparent 49.6%,#bd7a3688 50%,transparent 50.4%),linear-gradient(#bd7a3622 1px,transparent 1px);background-size:100% 100%,100% 22px;display:grid;place-items:center;color:#f7c78d;font-size:35px;position:relative;overflow:hidden}.miniCourt:before{content:'';width:85px;height:85px;border:1px solid #bd7a36;border-radius:50%;position:absolute}.miniCourt:after{content:'';position:absolute;left:10px;right:10px;top:7px;bottom:7px;border:1px solid #bd7a3666;border-radius:7px}.seasonEnd{background:linear-gradient(130deg,#382a15,#21180e);border-color:#94652b}
+@media(max-width:650px){.top{padding:8px}.brand h1{font-size:16px}.brandMark{width:33px;height:33px}.brandTag{font-size:9px;padding:4px 7px}nav button{min-width:61px;padding:7px;font-size:9px}main{padding:9px}.hero{padding:15px}.hero h2{font-size:23px}.hero:after{font-size:90px}.card{padding:11px;margin-bottom:9px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.grid2,.twoCol{gap:7px}.stat{padding:10px}.stat b{font-size:20px}.fieldGrid{grid-template-columns:1fr}.matchScore{gap:5px}.matchScore .score{font-size:25px}.matchScore .teamName{font-size:11px}.teamOption{padding:9px}.actions button{padding:9px;font-size:11px}.modal{padding:13px}.miniCourt{height:100px}}
+</style>
+</head>
+<body>
+<header class="top">
+ <div class="brand"><div class="brandTitle"><div class="brandMark">Q</div><div><h1>QUADRA <span>CARREIRA</span></h1><small class="muted">Simulador de carreira • Basquete</small></div></div><span class="brandTag">TEMPORADA 2026/27</span></div>
+ <div class="navLabel">NAVEGAÇÃO</div><nav id="nav"></nav>
+</header>
+<main>
+<section class="page active" id="inicio">
+ <div class="hero"><div class="eyebrow">Sua jornada começa na quadra</div><h2>🏀 Construa seu legado no basquete</h2><p>Saia da divisão de acesso, conquiste minutos, evolua seu jogo, encare a NBA ou vire ídolo no NBB. Cada partida pesa na sua carreira.</p></div>
+ <div id="setupView" class="card">
+  <div class="eyebrow">NOVA CARREIRA</div><h2>👤 Crie seu jogador</h2><p class="muted small">Escolha seu perfil, sua liga e o clube onde a história começa.</p>
+  <div class="fieldGrid">
+   <div class="field"><label>Nome do jogador</label><input id="newName" maxlength="28" value="Meu Jogador" placeholder="Seu nome"></div>
+   <div class="field"><label>Idade</label><select id="newAge"><option>18</option><option>19</option><option selected>20</option><option>21</option><option>22</option><option>23</option><option>24</option><option>25</option></select></div>
+   <div class="field"><label>Nacionalidade</label><select id="newNation"><option>🇧🇷 Brasil</option><option>🇺🇸 Estados Unidos</option><option>🇦🇷 Argentina</option><option>🇨🇦 Canadá</option><option>🇫🇷 França</option><option>🇷🇸 Sérvia</option><option>🇪🇸 Espanha</option><option>🇦🇺 Austrália</option><option>🇸🇮 Eslovênia</option><option>🇬🇷 Grécia</option><option>🇩🇪 Alemanha</option><option>🇵🇷 Porto Rico</option></select></div>
+   <div class="field"><label>Número da camisa</label><input id="newNumber" type="number" min="0" max="99" value="11"></div>
+   <div class="field"><label>Altura</label><select id="newHeight"><option value="178">1,78 m</option><option value="183">1,83 m</option><option value="188" selected>1,88 m</option><option value="193">1,93 m</option><option value="198">1,98 m</option><option value="203">2,03 m</option><option value="208">2,08 m</option><option value="213">2,13 m</option></select></div>
+   <div class="field"><label>Estilo de jogador</label><select id="newBuild"><option value="playmaker">Armador criador — passe e controle</option><option value="scorer" selected>Fazedor de pontos — arremesso e infiltração</option><option value="threeD">Ala 3&D — bola de três e defesa</option><option value="slasher">Ala atlético — velocidade e enterradas</option><option value="big">Pivô dominante — rebotes e garrafão</option></select></div>
+   <div class="field"><label>Divisão de início</label><select id="newLeague" onchange="renderTeamChoices()"><option value="NBA">🇺🇸 NBA — 1ª divisão</option><option value="GLEAGUE">🇺🇸 G League — 2ª divisão</option><option value="NBB">🇧🇷 NBB — 1ª divisão</option><option value="OURO">🇧🇷 Liga Ouro — 2ª divisão</option><option value="URU1">🇺🇾 Liga Uruguaia (LUB) — 1ª divisão</option><option value="URU2">🇺🇾 El Metro — 2ª divisão</option><option value="ARG1">🇦🇷 Liga Nacional Argentina — 1ª divisão</option><option value="ARG2">🇦🇷 La Liga Argentina — 2ª divisão</option><option value="ESP1">🇪🇸 Liga ACB — 1ª divisão</option><option value="ESP2">🇪🇸 Primera FEB — 2ª divisão</option></select></div>
+   <div class="field"><label>Dificuldade</label><select id="newDiff"><option value="easy">Fácil — evolução mais rápida</option><option value="normal" selected>Normal — carreira equilibrada</option><option value="hard">Difícil — técnico mais exigente</option></select></div>
+  </div>
+  <div class="row" style="margin-top:13px"><h3 style="margin:0">🏟️ Escolha seu clube</h3><span class="pill" id="teamCount">—</span></div><div id="teamChoices" class="grid" style="margin-top:9px"></div>
+  <div class="notice warn" id="leagueIntro">A NBA é a elite do basquete norte-americano. A G League funciona como liga de desenvolvimento e porta de entrada para contratos e chamadas à NBA.</div>
+  <button class="primary" style="width:100%;padding:13px" onclick="startCareer()">🏀 COMEÇAR MINHA CARREIRA</button>
+ </div>
+ <div id="homeView" class="hidden"></div>
+</section>
+<section class="page" id="carreira"><div id="careerPage"></div></section>
+<section class="page" id="partidas"><div id="gamesPage"></div></section>
+<section class="page" id="treino"><div id="trainingPage"></div></section>
+<section class="page" id="mercado"><div id="marketPage"></div></section>
+<section class="page" id="ligas"><div id="leaguesPage"></div></section>
+<section class="page" id="estatisticas"><div id="statsPage"></div></section>
+<section class="page" id="rivais"><div id="rivalsPage"></div></section>
+<section class="page" id="historico"><div id="historyPage"></div></section>
+<section class="page" id="config"><div id="configPage"></div></section>
+<div class="footer">QUADRA CARREIRA • Simulador independente • Progresso salvo neste navegador</div>
+</main>
+<div id="modalRoot"></div>
+<script>
+'use strict';
+const LEAGUES={
+ NBA:{name:'NBA',country:'Estados Unidos',division:'1ª divisão',seasonGames:82,format:'82 jogos na temporada regular • Playoffs',kind:'usa'},
+ GLEAGUE:{name:'NBA G League',country:'Estados Unidos',division:'2ª divisão',seasonGames:50,format:'Temporada de desenvolvimento • Playoffs',kind:'usa'},
+ NBB:{name:'NBB CAIXA',country:'Brasil',division:'1ª divisão',seasonGames:34,format:'Turno e returno • Playoffs',kind:'br'},
+ OURO:{name:'Liga Ouro',country:'Brasil',division:'2ª divisão',seasonGames:10,format:'Divisão de acesso • Disputa pelo acesso',kind:'br'},
+ URU1:{name:'Liga Uruguaia (LUB)',country:'Uruguai',division:'1ª divisão',seasonGames:28,format:'Temporada regular • Playoffs',kind:'uru'},
+ URU2:{name:'El Metro',country:'Uruguai',division:'2ª divisão',seasonGames:18,format:'Divisão de ascenso • Playoffs',kind:'uru'},
+ ARG1:{name:'Liga Nacional Argentina',country:'Argentina',division:'1ª divisão',seasonGames:38,format:'Temporada regular • Playoffs',kind:'arg'},
+ ARG2:{name:'La Liga Argentina',country:'Argentina',division:'2ª divisão',seasonGames:26,format:'Divisão de ascenso • Playoffs',kind:'arg'},
+ ESP1:{name:'Liga ACB',country:'Espanha',division:'1ª divisão',seasonGames:34,format:'Liga regular • Playoffs',kind:'esp'},
+ ESP2:{name:'Primera FEB',country:'Espanha',division:'2ª divisão',seasonGames:30,format:'Divisão de ascenso • Playoffs',kind:'esp'}
+};
+// Clubes e forças são uma base jogável inspirada nas ligas 2026/27; OVR de equipe é parâmetro do simulador.
+const TEAMS=[
+// NBA
+['NBA','Boston Celtics','BOS','#007a33',94],['NBA','Brooklyn Nets','BKN','#d5d5d5',78],['NBA','New York Knicks','NYK','#f58426',91],['NBA','Philadelphia 76ers','PHI','#2876c7',87],['NBA','Toronto Raptors','TOR','#ce1141',80],
+['NBA','Chicago Bulls','CHI','#ce1141',81],['NBA','Cleveland Cavaliers','CLE','#6f263d',91],['NBA','Detroit Pistons','DET','#c8102e',84],['NBA','Indiana Pacers','IND','#fdbb30',86],['NBA','Milwaukee Bucks','MIL','#00471b',88],
+['NBA','Atlanta Hawks','ATL','#e03a3e',84],['NBA','Charlotte Hornets','CHA','#1d8ca8',78],['NBA','Miami Heat','MIA','#98002e',87],['NBA','Orlando Magic','ORL','#0077c0',88],['NBA','Washington Wizards','WAS','#002b5c',74],
+['NBA','Denver Nuggets','DEN','#0e2240',93],['NBA','Minnesota Timberwolves','MIN','#0c2340',90],['NBA','Oklahoma City Thunder','OKC','#007ac1',95],['NBA','Portland Trail Blazers','POR','#e03a3e',78],['NBA','Utah Jazz','UTA','#753bbd',79],
+['NBA','Golden State Warriors','GSW','#1d428a',88],['NBA','LA Clippers','LAC','#c8102e',84],['NBA','Los Angeles Lakers','LAL','#552583',90],['NBA','Phoenix Suns','PHX','#1d1160',87],['NBA','Sacramento Kings','SAC','#5a2d81',82],
+['NBA','Dallas Mavericks','DAL','#00538c',87],['NBA','Houston Rockets','HOU','#ce1141',89],['NBA','Memphis Grizzlies','MEM','#5d76a9',86],['NBA','New Orleans Pelicans','NOP','#0c2340',82],['NBA','San Antonio Spurs','SAS','#c4ced4',88],
+// NBA G League (2026/27)
+['GLEAGUE','Austin Spurs','AUS','#111111',75],['GLEAGUE','Capital City Go-Go','CCG','#e31837',72],['GLEAGUE','Cleveland Charge','CLE-C','#6f263d',73],['GLEAGUE','Coachella Valley Lakers','CVL','#552583',75],['GLEAGUE','College Park Skyhawks','CPS','#c8102e',71],['GLEAGUE','Delaware Blue Coats','DBC','#006bb6',76],['GLEAGUE','Grand Rapids Gold','GRG','#0e2240',72],['GLEAGUE','Greensboro Swarm','GSO','#00788c',70],['GLEAGUE','Iowa Wolves','IOW','#0c2340',74],['GLEAGUE','Laketown Squadron','LKS','#0c2340',71],['GLEAGUE','Long Island Nets','LIN','#000000',74],['GLEAGUE','Maine Celtics','MAI','#007a33',76],['GLEAGUE','Memphis Hustle','MEM-H','#5d76a9',72],['GLEAGUE','Motor City Cruise','MCC','#c8102e',72],['GLEAGUE','Noblesville Boom','NOB','#fdbb30',73],['GLEAGUE','Oklahoma City Blue','OKB','#007ac1',75],['GLEAGUE','Osceola Magic','OSC','#0077c0',74],['GLEAGUE','Raptors 905','R905','#ce1141',73],['GLEAGUE','Rio Grande Valley Vipers','RGV','#ce1141',74],['GLEAGUE','Rip City Remix','RCR','#e03a3e',72],['GLEAGUE','Salt Lake City Stars','SLC','#753bbd',74],['GLEAGUE','San Diego Clippers','SDC','#c8102e',73],['GLEAGUE','Santa Cruz Warriors','SCW','#1d428a',76],['GLEAGUE','Sioux Falls Skyforce','SFS','#98002e',75],['GLEAGUE','Stockton Kings','STK','#5a2d81',73],['GLEAGUE','Texas Legends','TEX','#00538c',73],['GLEAGUE','Valley Suns','VLS','#1d1160',73],['GLEAGUE','Westchester Knicks','WES','#f58426',74],['GLEAGUE','Windy City Bulls','WCB','#ce1141',75],['GLEAGUE','Wisconsin Herd','WIS','#00471b',72],['GLEAGUE','Mexico City Capitanes','MCCAP','#b12830',77],
+// NBB 2026/27
+['NBB','Basquete Cearense','CEA','#0c6b47',75],['NBB','Bauru Basket','BAU','#ed1c24',78],['NBB','Botafogo','BOT','#eeeeee',76],['NBB','CAIXA/Brasília','BRA','#006b3f',77],['NBB','Caxias do Sul Basquete','CAX','#111111',73],['NBB','Corinthians','COR','#eeeeee',80],['NBB','Cruzeiro Basquete','CRU','#183a75',75],['NBB','Flamengo','FLA','#c8102e',84],['NBB','Sesi Franca','FRA','#e5bd45',86],['NBB','Minas Tênis Clube','MINAS','#172c52',83],['NBB','Mogi Basquete','MOG','#005ca9',75],['NBB','Basket Osasco','OSA','#f0c419',72],['NBB','Pato Basquete','PAT','#155c3d',74],['NBB','Paulistano','PAU','#d7272d',79],['NBB','Pinheiros','PIN','#183b6b',78],['NBB','São José Basketball','SJC','#0072bc',77],['NBB','Ceisc/União Corinthians','UCO','#111111',76],['NBB','Unifacisa','UNI','#153d73',80],
+// Vasco incluído no NBB
+['NBB','Vasco da Gama','VAS','#111111',81],
+// Liga Ouro 2026/27
+['OURO','Basquete Assis','ASS','#d7a331',66],['OURO','Brusque Basquete','BRU','#174d9c',67],['OURO','Conta Simples Rio Claro','RIO','#008b8b',69],['OURO','Grupo BT/Clube de Campo de Tatuí','TAT','#124d36',68],['OURO','Fluminense','FLU','#7b1725',70],['OURO','Olympico Club','OLY','#e2e2e2',65],
+// Uruguai: Liga Uruguaia e El Metro
+['URU1','Peñarol','PEN','#f5c400',82],['URU1','Club Atlético Aguada','AGU','#d71920',80],['URU1','Nacional','NAC','#e31b23',81],['URU1','Defensor Sporting','DEF','#6b3fa0',76],['URU1','Malvín','MAL','#1767a8',77],['URU1','Hebraica Macabi','HEB','#173b70',78],['URU1','Urunday Universitario','URU','#176b45',74],['URU1','Bigua','BIG','#183c70',75],
+['URU2','Capitol','CAP','#e3e3e3',68],['URU2','Larre Borges','LAR','#f0c419',67],['URU2','Olivol Mundial','OLI','#245b9a',66],['URU2','Tabaré','TAB','#e1d5b8',65],['URU2','Welcome','WEL','#d71920',68],['URU2','Stockolmo','STO','#264d91',66],['URU2','Larrañaga','LÑA','#173b70',65],['URU2','Miramar','MIR','#111111',64],
+// Argentina: Liga Nacional e Liga Argentina
+['ARG1','Boca Juniors','BOC','#174a9b',84],['ARG1','Quimsa','QUI','#173b70',85],['ARG1','Instituto','INS','#e32636',82],['ARG1','San Lorenzo','SLO','#b51f2b',80],['ARG1','Obras Basket','OBR','#e3bd39',79],['ARG1','Regatas Corrientes','REG','#173b70',78],['ARG1','Peñarol de Mar del Plata','PDM','#f0c419',77],['ARG1','Atenas','ATE','#1e6b45',76],
+['ARG2','Provincial','PRO','#d71920',70],['ARG2','Lanús','LAN','#8d1b2b',69],['ARG2','Gimnasia y Esgrima','GYE','#176b45',71],['ARG2','Racing de Chivilcoy','RAC','#e1e1e1',70],['ARG2','Deportivo Viedma','VIE','#d71920',68],['ARG2','Villa Mitre','VIM','#176b45',67],['ARG2','Pico FC','PIC','#1d4d9b',69],['ARG2','La Unión','LAU','#e32636',68],
+// Espanha: ACB e Primera FEB
+['ESP1','Real Madrid Baloncesto','RMB','#e6e6e6',94],['ESP1','FC Barcelona Basket','FCB','#174a9b',91],['ESP1','Valencia Basket','VAL','#f07822',86],['ESP1','Baskonia','BAS','#c51e2b',85],['ESP1','Unicaja Málaga','UNI-ES','#176b45',87],['ESP1','Joventut Badalona','JOV','#176b45',82],['ESP1','Gran Canaria','GCA','#e6c33b',80],['ESP1','Bilbao Basket','BIL','#111111',78],
+['ESP2','Movistar Estudiantes','EST','#174a9b',76],['ESP2','Palencia Baloncesto','PAL','#e6c33b',73],['ESP2','San Pablo Burgos','BUR','#d71920',75],['ESP2','Leyma Coruña','COR-ES','#f07822',74],['ESP2','Ourense','OUR','#d71920',70],['ESP2','Fuenlabrada','FUE','#e6c33b',72],['ESP2','Gipuzkoa Basket','GIP','#173b70',71],['ESP2','Alicante','ALI','#e6e6e6',70]
+].map((a,i)=>({id:'tm'+i,league:a[0],name:a[1],short:a[2],color:a[3],ovr:a[4]}));
+const BUILDS={
+ playmaker:{label:'Armador criador',position:'PG',heightMin:175,attrs:{shoot:65,three:64,finish:58,dunk:48,pass:82,handle:81,defense:61,rebound:45,athletic:64,iq:78}},
+ scorer:{label:'Fazedor de pontos',position:'SG',heightMin:180,attrs:{shoot:78,three:76,finish:73,dunk:65,pass:59,handle:75,defense:57,rebound:48,athletic:70,iq:66}},
+ threeD:{label:'Ala 3&D',position:'SF',heightMin:188,attrs:{shoot:74,three:80,finish:60,dunk:59,pass:58,handle:61,defense:81,rebound:65,athletic:70,iq:73}},
+ slasher:{label:'Ala atlético',position:'SF',heightMin:190,attrs:{shoot:62,three:58,finish:80,dunk:86,pass:59,handle:73,defense:66,rebound:62,athletic:88,iq:64}},
+ big:{label:'Pivô dominante',position:'C',heightMin:200,attrs:{shoot:52,three:42,finish:82,dunk:78,pass:54,handle:45,defense:82,rebound:88,athletic:68,iq:74}}
+};
+const NAV=[['inicio','🏠','Início'],['carreira','👤','Carreira'],['partidas','🏀','Partidas'],['treino','🏋️','Treino'],['mercado','💼','Mercado'],['ligas','🏆','Ligas'],['estatisticas','📊','Estatísticas'],['rivais','⚔️','Rivais'],['historico','📜','Histórico'],['config','⚙️','Config.']];
+const $=id=>document.getElementById(id),clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),rand=(a,b)=>a+Math.random()*(b-a),pick=a=>a[Math.floor(Math.random()*a.length)],shuffle=a=>{let b=a.slice();for(let i=b.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b},esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let selectedTeam=null,leagueView='NBA',S=null;
+
+const SPONSORS=[
+ {id:'nike',name:'Nike',minOvr:70,minRep:25,pay:28000},
+ {id:'adidas',name:'Adidas',minOvr:65,minRep:18,pay:18000},
+ {id:'gatorade',name:'Gatorade',minOvr:72,minRep:30,pay:35000},
+ {id:'jordan',name:'Jordan Brand',minOvr:82,minRep:45,pay:90000},
+ {id:'statefarm',name:'State Farm',minOvr:75,minRep:35,pay:50000},
+ {id:'redbull',name:'Red Bull',minOvr:68,minRep:20,pay:22000},
+ {id:'jbl',name:'JBL',minOvr:60,minRep:10,pay:12000},
+ {id:'underarmour',name:'Under Armour',minOvr:74,minRep:28,pay:32000}
+];
+function teamShield(t,size){
+  if(!t)return '';
+  const cls=size==='lg'?'shield lg':size==='sm'?'shield sm':'shield';
+  const abbr=(t.short||t.abbr||t.name||'?').toString().slice(0,3).toUpperCase();
+  return '<span class="'+cls+'" style="background:linear-gradient(145deg,'+(t.color||'#888')+','+(t.color||'#888')+'99)" title="'+esc(t.name)+'">'+abbr+'</span>';
+}
+function teamById(id){return TEAMS.find(t=>t.id===id)||TEAMS[0]}
+function team(){return teamById(S.teamId)}
+function leagueOf(t){return S?.divisionMoves?.[t.id]||t.league}
+function leagueName(id){return LEAGUES[id]?.name||id}
+function teamsIn(id){return TEAMS.filter(t=>leagueOf(t)===id)}
+function money(n){return 'US$ '+Math.round(n).toLocaleString('pt-BR')}
+function playerOverall(a){return Math.round((a.shoot*.13+a.three*.10+a.finish*.11+a.dunk*.06+a.pass*.12+a.handle*.12+a.defense*.12+a.rebound*.09+a.athletic*.08+a.iq*.07))}
+function attrColor(v){return v>=85?'#49d69a':v>=75?'#f7cf68':v>=65?'#f28a24':'#ef756c'}
+function defaultState(){return {version:1,started:false,season:2026,divisionMoves:{},leagueId:'NBA',teamId:null,difficulty:'normal',player:null,round:0,phase:'setup',table:[],match:null,offers:[],trainingUsed:false,trainingNote:'',seasonStats:null,career:{games:0,points:0,rebounds:0,assists:0,steals:0,blocks:0,wins:0,losses:0,titles:0,mvp:0,allStar:0,highest:0},history:[],logs:[],rivals:[],rep:40,money:50000,contractYears:2,seasonAwards:null,playoff:null,leagueHistory:[],careerEnded:false,seasonDone:false,callups:0,clubHistory:[]}}
+function save(){try{localStorage.setItem('quadraCarreiraSaveV1',JSON.stringify(S))}catch(e){}}
+function load(){try{let d=JSON.parse(localStorage.getItem('quadraCarreiraSaveV1')||'null');if(d&&d.version===1){d.divisionMoves=d.divisionMoves||{};return d}}catch(e){}return defaultState()}
+function leagueGameCount(){return LEAGUES[S.leagueId].seasonGames}
+function newSeasonStats(){return {games:0,points:0,rebounds:0,assists:0,steals:0,blocks:0,turnovers:0,minutes:0,wins:0,losses:0,gradeSum:0,high:0,threeMade:0,threeAtt:0,fgMade:0,fgAtt:0}}
+function initTable(){S.table=teamsIn(S.leagueId).map(t=>({id:t.id,name:t.name,ovr:t.ovr,w:0,l:0,pts:0,for:0,against:0,streak:'—'}))}
+function makeRivals(){let pool=teamsIn(S.leagueId).filter(t=>t.id!==S.teamId);S.rivals=shuffle(pool).slice(0,3).map((t,i)=>({name:pick(['Lucas Ferreira','Matheus Costa','Gabriel Santos','Rafael Lima','Bruno Alves','Caio Martins','Enzo Carvalho','Davi Oliveira','Miguel Rocha','Pedro Henrique']),teamId:t.id,ovr:clamp(t.ovr+Math.round(rand(-8,2)),54,96),position:pick(['PG','SG','SF','PF','C']),points:0,games:0,grade:0,rep:rand(28,58)}))}
+function renderTeamChoices(){let l=$('newLeague')?.value||'NBA',items=teamsIn(l);$('teamCount').textContent=items.length+' clubes';if(!items.length){$('teamChoices').innerHTML='';return}if(!items.some(t=>t.id===selectedTeam))selectedTeam=items[Math.floor(items.length/2)].id;$('teamChoices').innerHTML=items.map(t=>`<div class="teamOption ${selectedTeam===t.id?'selected':''}" onclick="chooseTeam('${t.id}')"><div class="row"><span class="rowStart">${teamShield(t)}<b style="font-size:12px">${esc(t.name)}</b></span><span class="pill">${t.ovr} OVR</span></div><p>${leagueName(leagueOf(t))} • ${t.short}</p><div class="bar"><i style="width:${t.ovr}%"></i></div></div>`).join('');let intro={NBA:'A NBA é a principal liga dos Estados Unidos. Aqui o nível é alto: você pode começar no banco e conquistar espaço contra estrelas.',GLEAGUE:'A G League é a liga oficial de desenvolvimento. Não existe rebaixamento para a NBA: boas atuações podem render uma chamada ou contrato na elite.',NBB:'O NBB é a elite do basquete brasileiro. O desempenho e a classificação podem decidir títulos e permanência na primeira divisão.',OURO:'A Liga Ouro é a divisão de acesso ao NBB. O título pode abrir o caminho para a elite brasileira.',URU1:'A Liga Uruguaia (LUB) é a primeira divisão. Os dois últimos podem cair para El Metro.',URU2:'El Metro é a segunda divisão uruguaia. Os dois melhores podem conquistar o acesso à LUB.',ARG1:'A Liga Nacional é a primeira divisão argentina. Os dois últimos podem cair.',ARG2:'A Liga Argentina é a segunda divisão e oferece acesso à Liga Nacional.',ESP1:'A Liga ACB é a elite espanhola. Os dois últimos podem cair para a Primera FEB.',ESP2:'A Primera FEB é a segunda divisão espanhola e oferece acesso à ACB.'};$('leagueIntro').textContent=intro[l]}
+function chooseTeam(id){selectedTeam=id;renderTeamChoices()}
+function startCareer(){let name=$('newName').value.trim()||'Meu Jogador',age=+$('newAge').value,build=$('newBuild').value,league=$('newLeague').value,club=teamById(selectedTeam);if(leagueOf(club)!==league){selectedTeam=teamsIn(league)[0].id;club=teamById(selectedTeam)}let attrs={...BUILDS[build].attrs},diff=$('newDiff').value;let boost=diff==='easy'?3:diff==='hard'?-2:0;Object.keys(attrs).forEach(k=>attrs[k]=clamp(attrs[k]+boost,35,92));let ovr=playerOverall(attrs);S=defaultState();S.started=true;S.phase='regular';S.season=2026;S.leagueId=league;leagueView=league;S.teamId=club.id;S.difficulty=diff;S.player={name,age,nation:$('newNation').value,number:clamp(+$('newNumber').value||11,0,99),height:+$('newHeight').value,build,position:BUILDS[build].position,attrs,ovr,potential:clamp(ovr+Math.round(rand(8,18)),70,96),fatigue:8,morale:65,role:'Rotação',coachTrust:55,minutes:0,exp:0};if(S.player.height<(BUILDS[build].heightMin||175)-7&&build==='big')S.player.attrs.rebound-=5;S.player.ovr=playerOverall(S.player.attrs);S.seasonStats=newSeasonStats();S.money=league==='NBA'?90000:league==='GLEAGUE'?28000:league==='NBB'?18000:['URU1','ARG1','ESP1'].includes(league)?22000:9000;S.rep=league==='NBA'?48:league==='NBB'?42:28;S.contractYears=2;initTable();makeRivals();S.logs.push(`Sua carreira começou no ${club.name}, disputando a ${leagueName(league)}.`);S.clubHistory=[{season:S.season,team:club.name,league:leagueName(league)}];save();renderAll();go('carreira')}
+function renderNav(){ $('nav').innerHTML=NAV.map(n=>`<button data-page="${n[0]}" class="${(document.querySelector('#'+n[0]+'.page')?.classList.contains('active'))?'active':''}" onclick="go('${n[0]}')"><span>${n[1]}</span>${n[2]}</button>`).join('')}
+function go(id){if(!S?.started&&id!=='inicio')return;document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));$(id)?.classList.add('active');renderNav();renderAll(false);window.scrollTo({top:0,behavior:'smooth'})}
+function addLog(s){S.logs.unshift(s);S.logs=S.logs.slice(0,100)}
+function getPositionRank(){let rows=[...S.table].sort((a,b)=>b.pts-a.pts||(b.for-b.against)-(a.for-a.against));return rows.findIndex(x=>x.id===S.teamId)+1}
+function roleLabel(){let p=S.player,t=team();if(p.ovr>=90)return'Franchise player';if(p.ovr>=85)return'Titular absoluto';if(p.ovr>=79)return'Titular';if(p.ovr>=73)return'Rotação';if(p.ovr>=67)return'Reserva';return'Projeto de desenvolvimento'}
+function renderAll(renderSetup=true){renderNav();if(!S?.started){if(renderSetup){$('setupView').classList.remove('hidden');$('homeView').classList.add('hidden');renderTeamChoices()}return}$('setupView').classList.add('hidden');$('homeView').classList.remove('hidden');renderHome();renderCareer();renderGames();renderTraining();renderMarket();renderLeagues();renderStats();renderRivals();renderHistory();renderConfig()}
+function renderHome(){let p=S.player,t=team(),rank=getPositionRank(),next=nextMatchInfo();$('homeView').innerHTML=`<div class="hero"><div class="eyebrow">TEMPORADA ${S.season}/${S.season+1} • ${leagueName(S.leagueId)}</div><h2>${teamShield(t,'lg')} ${esc(p.name)} <span style="color:var(--accent2)">#${p.number}</span></h2><p>${p.nation} • ${teamShield(t,'sm')} ${esc(t.name)} • ${p.age} anos • ${p.position} • ${p.ovr} OVR</p>
+<div class="simBar">
+ <button type="button" class="secondary" onclick="simWeek()">⏩ Simular semana</button>
+ <button type="button" class="secondary" onclick="simMonth()">⏩ Simular mês</button>
+ <button type="button" class="primary" onclick="simSeason()">⏩ Simular temporada</button>
+</div>
+${S.sponsorOffer?`<div class="notice goodNotice">💼 Patrocínio: <b>${esc(S.sponsorOffer.name)}</b> (${money(S.sponsorOffer.pay)}/ano) <button class="primary" onclick="acceptSponsor()">Aceitar</button> <button onclick="refuseSponsor()">Recusar</button></div>`:''}
+${(S.sponsors&&S.sponsors.length)?`<div class="pill">Patrocínios: ${S.sponsors.map(x=>x.name).join(', ')}</div>`:''}
+</div><div class="grid"><div class="stat"><label>Posição na liga</label><b>#${rank||'—'}</b><small>${t.name} • ${leagueName(S.leagueId)}</small></div><div class="stat"><label>Média de pontos</label><b>${avg(S.seasonStats.points,S.seasonStats.games).toFixed(1)}</b><small>${S.seasonStats.points} pontos na temporada</small></div><div class="stat"><label>Minutos por jogo</label><b>${avg(S.seasonStats.minutes,S.seasonStats.games).toFixed(1)}</b><small>Participação do elenco</small></div><div class="stat"><label>Confiança do técnico</label><b>${p.coachTrust}/100</b><small>${esc(p.role||roleLabel())}</small></div></div><div class="card" style="margin-top:13px"><div class="row"><h3>🏀 Próximo compromisso</h3><span class="pill">${S.phase==='regular'?'TEMPORADA REGULAR':S.phase==='playoffs'?'PLAYOFFS':'ENTRESSAFRA'}</span></div>${next?`<div class="matchBanner"><div class="row"><div><div class="eyebrow">${S.phase==='playoffs'?S.playoff.stage:'JOGO '+(S.round+1)+' DE '+leagueGameCount()}</div><h2 style="margin:4px 0">${esc(next.opponent.name)}</h2><small class="muted">${next.home?'Em casa':'Fora de casa'} • ${leagueName(S.leagueId)}</small></div><div class="stat" style="text-align:center;min-width:78px"><label>Adversário</label><b>${next.opponent.ovr}</b><small>OVR do time</small></div></div></div><button class="primary" onclick="go('partidas')">Abrir preparação da partida →</button>`:`<div class="notice goodNotice">Temporada encerrada. Confira os resultados e o mercado de transferências.</div><button class="primary" onclick="go('mercado')">Ver mercado</button>`}</div><div class="grid2"><div class="card"><h3>💰 Situação financeira</h3><b class="orange">${money(S.money)}</b><p class="small muted">Contrato: ${S.contractYears} temporada(s) restantes.</p></div><div class="card"><h3>⚡ Condição física</h3><b>${100-p.fatigue}%</b><div class="bar" style="margin-top:8px"><i style="width:${100-p.fatigue}%"></i></div><p class="small muted">${p.fatigue>75?'Cansaço alto: considere descansar.':p.fatigue>45?'Atenção à recuperação entre jogos.':'Você está em boas condições.'}</p></div></div>${S.phase==='regular'&&S.trainingUsed?'<div class="notice">Você já treinou entre os jogos. Descanse ou avance para a próxima partida.</div>':''}${S.phase==='regular'&&!S.trainingUsed?'<div class="notice goodNotice">Você tem uma sessão de treino disponível antes do próximo jogo.</div>':''}`}
+function avg(v,n){return n?v/n:0}
+function nextMatchInfo(){if(S.phase==='regular'&&S.round<leagueGameCount()){let opp=scheduledOpponent(S.round);return {opponent:teamById(opp),home:(S.round%2===0)}}if(S.phase==='playoffs'&&S.playoff)return {opponent:teamById(S.playoff.opponent),home:(S.playoff.games%2===0)};return null}
+function scheduledOpponent(round){let list=teamsIn(S.leagueId).filter(t=>t.id!==S.teamId);let idx=(round*7+Math.floor(round/Math.max(1,list.length)))%list.length;return list[idx].id}
+function renderCareer(){let p=S.player,t=team(),a=p.attrs;let names={shoot:'Arremesso',three:'Bola de 3',finish:'Finalização',dunk:'Enterradas',pass:'Passe',handle:'Drible',defense:'Defesa',rebound:'Rebote',athletic:'Físico',iq:'QI de jogo'};$('careerPage').innerHTML=`<div class="hero"><div class="eyebrow">PERFIL DO ATLETA</div><h2>${esc(p.name)} • ${p.position}</h2><p>${esc(t.name)} • ${leagueName(S.leagueId)} • Camisa ${p.number} • ${p.height/100} m</p></div><div class="grid"><div class="stat"><label>Overall</label><b>${p.ovr}</b><small>Potencial oculto</small></div><div class="stat"><label>Idade</label><b>${p.age}</b><small>Temporada ${S.season}/${S.season+1}</small></div><div class="stat"><label>Função no time</label><b style="font-size:17px">${esc(p.role||roleLabel())}</b><small>Confiança ${p.coachTrust}/100</small></div><div class="stat"><label>Moral</label><b>${p.morale}/100</b><small>Reputação ${S.rep}/100</small></div></div><div class="card"><div class="row"><h3>📈 Atributos técnicos</h3><span class="pill">${BUILDS[p.build].label}</span></div><div class="grid2">${Object.entries(names).map(([k,n])=>`<div><div class="row"><span class="small">${n}</span><b class="small">${a[k]}</b></div><div class="bar"><i style="width:${a[k]}%;background:${attrColor(a[k])}"></i></div></div>`).join('')}</div></div><div class="card"><h3>📋 Situação no elenco</h3><div class="row"><span>Minutos nesta temporada</span><b>${S.seasonStats.minutes}</b></div><div class="bar"><i style="width:${clamp(p.coachTrust,0,100)}%"></i></div><p class="muted small">Quanto maior sua confiança e seu overall em relação aos companheiros, maior tende a ser seu tempo em quadra. Desempenho ruim e cansaço podem reduzir sua rotação.</p><div class="line"></div><div class="row"><span>Valor de mercado estimado</span><b class="orange">${money(12000*p.ovr*p.ovr/70)}</b></div></div>`}
+function updateRole(){let p=S.player,rank=p.coachTrust;if(p.ovr>=90&&rank>=72)p.role='Franchise player';else if(p.ovr>=84&&rank>=63)p.role='Titular absoluto';else if(p.ovr>=77&&rank>=50)p.role='Titular';else if(p.ovr>=69&&rank>=40)p.role='Rotação';else p.role=p.ovr<65?'Projeto de desenvolvimento':'Reserva'}
+function renderGames(){let el=$('gamesPage');
+const simBtns='<div class="card"><h3>⏩ Simulação rápida</h3><p class="muted small">Avança jogos e mostra estatísticas ao final.</p><div class="simBar"><button type="button" class="secondary" onclick="simWeek()">Semana (2)</button><button type="button" class="secondary" onclick="simMonth()">Mês (8)</button><button type="button" class="primary" onclick="simSeason()">Temporada completa</button></div></div>';
+if(S.match){el.innerHTML=simBtns+renderLiveMatch();return}let info=nextMatchInfo();if(!info){el.innerHTML=simBtns+`<div class="hero"><div class="eyebrow">TEMPORADA ENCERRADA</div><h2>Fim de temporada</h2><p>Veja sua classificação, suas médias e as oportunidades de mercado.</p><button class="primary" onclick="go('mercado')">Abrir mercado</button></div>`;return}let t=team(),opp=info.opponent;el.innerHTML=simBtns+`<div class="hero"><div class="eyebrow">${S.phase==='playoffs'?'PLAYOFFS':'DIA DE JOGO'}</div><h2>🏀 Preparação para a partida</h2><p>Leia o confronto, escolha sua abordagem e entre em quadra. Cada quarto permite uma decisão diferente.</p></div><div class="matchBanner"><div class="matchScore"><div><div class="teamName">${esc(info.home?t.name:opp.name)}</div><div class="sub">${info.home?'MANDANTE':'VISITANTE'}</div><div class="rating">${info.home?t.ovr:opp.ovr}</div></div><div><div class="score">VS</div><div class="sub">${S.phase==='playoffs'?S.playoff.stage:'JOGO '+(S.round+1)+' / '+leagueGameCount()}</div></div><div><div class="teamName">${esc(info.home?opp.name:t.name)}</div><div class="sub">${info.home?'VISITANTE':'MANDANTE'}</div><div class="rating">${info.home?opp.ovr:t.ovr}</div></div></div></div><div class="grid"><div class="stat"><label>Seu overall</label><b>${S.player.ovr}</b><small>${S.player.position} • ${S.player.role||roleLabel()}</small></div><div class="stat"><label>Condição física</label><b>${100-S.player.fatigue}%</b><small>${S.player.fatigue>70?'Cansado':'Disponível'}</small></div><div class="stat"><label>Confiança do técnico</label><b>${S.player.coachTrust}</b><small>Impacta seus minutos</small></div><div class="stat"><label>Moral</label><b>${S.player.morale}</b><small>Impacta consistência</small></div></div><div class="card"><h3>🧠 Plano de jogo</h3><p class="small muted">Você não precisa entender todas as táticas: cada opção mostra o que ela faz. Sua escolha pode melhorar um fundamento e cobrar energia em outro.</p><div class="choice"><b>🔥 Buscar pontuação</b><small>Mais arremessos e chances de pontuar. Pode aumentar erros e cansaço.</small></div><div class="choice"><b>🎯 Jogar equilibrado</b><small>Distribui o esforço entre ataque e defesa. É a escolha mais segura.</small></div><div class="choice"><b>🧩 Organizar o ataque</b><small>Prioriza passes, assistências e boas decisões. Menos arremessos forçados.</small></div><div class="choice"><b>🛡️ Marcar forte</b><small>Mais roubos, tocos e rebotes defensivos. O ataque individual perde espaço.</small></div><button class="primary" style="width:100%;margin-top:8px" onclick="startMatch()">🏀 COMEÇAR A PARTIDA</button></div>`}
+function newPlayerLine(){return {pts:0,reb:0,ast:0,stl:0,blk:0,tov:0,fgm:0,fga:0,threeM:0,threeA:0,ftm:0,fta:0,mins:0}}
+function startMatch(){if(S.match)return;let inf=nextMatchInfo();if(!inf)return;let home=inf.home;S.match={opponent:inf.opponent.id,home,quarter:1,homeScore:0,awayScore:0,player:newPlayerLine(),log:[`A bola sobe! ${team().name} enfrenta ${inf.opponent.name}.`],styles:[],overtime:0,startedAt:new Date().toISOString()};S.trainingUsed=true;save();renderGames()}
+function simOneGameFast(){
+  if(!S||S.match)return false;
+  var inf=nextMatchInfo();
+  if(!inf||!inf.opponent)return false;
+  var p=S.player,t=team(),o=inf.opponent,home=!!inf.home;
+  if(!p||!t||!o)return false;
+  var attrs=p.attrs||{};
+  var ovr=+p.ovr||70,oOvr=+o.ovr||75;
+  var mins=clamp(Math.round(22+(ovr-oOvr)*0.35+rand(-4,6)+(+(p.coachTrust||50))/20),8,38);
+  if((+p.fatigue||0)>75)mins=Math.round(mins*0.75);
+  var stamina=Math.max(0.5,1-(+p.fatigue||0)/220);
+  var shots=Math.max(2,Math.round((mins/12)*(2.4+(+(attrs.shoot||60))*0.03)*stamina));
+  var threeA=Math.max(0,Math.round(shots*0.34*(+(attrs.three||60))/80));
+  var twoA=Math.max(0,shots-threeA);
+  var threePct=clamp(0.28+(+(attrs.three||60))/400+(ovr-70)*0.002,0.15,0.52);
+  var twoPct=clamp(0.42+(+(attrs.shoot||60))/350,0.3,0.65);
+  var threeM=0,twoM=0,ii;
+  for(ii=0;ii<threeA;ii++)if(Math.random()<threePct)threeM++;
+  for(ii=0;ii<twoA;ii++)if(Math.random()<twoPct)twoM++;
+  var pts=twoM*2+threeM*3+Math.round(rand(0,4));
+  var reb=Math.max(0,Math.round(mins/36*(+(attrs.rebound||60))/18+rand(0,3)));
+  var ast=Math.max(0,Math.round(mins/36*(+(attrs.pass||60))/20+rand(0,3)));
+  var stl=Math.max(0,Math.round(rand(0,2)+(+(attrs.defense||60))/80));
+  var blk=Math.max(0,Math.round(rand(0,1.5)+(+(attrs.dunk||50))/100));
+  var tov=Math.max(0,Math.round(rand(0,3)+(100-(+(attrs.handle||60)))/50));
+  var teamBase=88+(t.ovr-75)*0.9+rand(-10,10)+(pts*0.15);
+  var oppBase=88+(oOvr-75)*0.9+rand(-10,10);
+  if(ovr>oOvr+5)teamBase+=3;
+  if((+p.fatigue||0)>80)teamBase-=4;
+  var myScore=Math.round(teamBase),oppScore=Math.round(oppBase);
+  if(myScore===oppScore)myScore++;
+  var playerLine={pts:pts,reb:reb,ast:ast,stl:stl,blk:blk,tov:tov,mins:mins,fgm:twoM+threeM,fga:twoA+threeA,threeM:threeM,threeA:threeA,ftm:0,fta:0};
+  S.match={opponent:o.id,home:home,quarter:5,homeScore:home?myScore:oppScore,awayScore:home?oppScore:myScore,player:playerLine,log:['Sim'],styles:['balanced'],overtime:0};
+  p.fatigue=clamp((+p.fatigue||0)+rand(6,14),0,100);
+  try{completeMatch();}catch(e){console.error(e);S.match=null;return false;}
+  return true;
+}
+function simGames(n,label){
+  try{
+    if(!S||!S.started){showModal('SIMULAÇÃO','Comece uma carreira primeiro.','⚠️');return 0}
+    if(S.phase==='setup'){showModal('SIMULAÇÃO','Comece uma carreira primeiro.','⚠️');return 0}
+    if(S.match){showModal('SIMULAÇÃO','Feche a partida em andamento antes.','⚠️');return 0}
+    if(S.phase==='seasonEnd'){showModal('SIMULAÇÃO','Temporada já encerrada. Vá ao mercado ou inicie a próxima.','⚠️');return 0}
+    if(!S.seasonStats)S.seasonStats=newSeasonStats();
+    if(!S.table||!S.table.length){try{initTable()}catch(e){}}
+    if(!S.rivals)S.rivals=[];
+
+    var beforeGames=S.seasonStats.games||0;
+    var beforePts=S.seasonStats.points||0;
+    var beforeReb=S.seasonStats.rebounds||0;
+    var beforeAst=S.seasonStats.assists||0;
+    var beforeW=S.seasonStats.wins||0;
+    var beforeL=S.seasonStats.losses||0;
+
+    S._simSilent=true;
+    var played=0,guard=0;
+    var max=Math.min(Math.max(1,+n||1),250);
+
+    while(played<max && guard++<400){
+      if(S.phase==='seasonEnd')break;
+      var info=nextMatchInfo();
+      if(!info){
+        if(S.phase==='regular'){
+          try{endRegularSeason();}catch(e){console.error('endRegular',e);break;}
+          if(S.phase==='playoffs')continue;
+          break;
+        }
+        break;
+      }
+      S.player.fatigue=clamp((+S.player.fatigue||0)-rand(5,12),0,100);
+      S.trainingUsed=false;
+      if(!simOneGameFast())break;
+      played++;
+    }
+
+    S._simSilent=false;
+    var st=S.seasonStats||{};
+    var dg=(st.games||0)-beforeGames;
+    try{addLog((label||'Simulação')+': '+dg+' jogo(s).');}catch(e){}
+    try{save();}catch(e){}
+    try{renderAll();}catch(e){console.error(e)}
+
+    var summary=(label||'Simulação')+': '+dg+' jogos | Pts '+((st.points||0)-beforePts)+
+      ' (méd '+(dg?(((st.points||0)-beforePts)/dg).toFixed(1):'0')+') | Reb '+((st.rebounds||0)-beforeReb)+
+      ' | Ast '+((st.assists||0)-beforeAst)+' | +'+((st.wins||0)-beforeW)+'-'+((st.losses||0)-beforeL)+
+      ' (temp '+(st.wins||0)+'-'+(st.losses||0)+') | '+S.phase+' | OVR '+(S.player&&S.player.ovr);
+    showModal('SIMULAÇÃO RÁPIDA', summary, '⏩');
+    return dg;
+  }catch(err){
+    S._simSilent=false;
+    console.error(err);
+    showModal('ERRO NA SIMULAÇÃO', String(err&&err.message||err), '⚠️');
+    try{save();renderAll()}catch(e){}
+    return 0;
+  }
+}
+function simWeek(){return simGames(2,'Semana')}
+function simMonth(){return simGames(8,'Mês')}
+function simSeason(){
+  try{
+    if(!S||!S.started){showModal('SIMULAÇÃO','Comece uma carreira primeiro.','⚠️');return}
+    if(S.phase==='seasonEnd'){showModal('SIMULAÇÃO','Temporada já encerrada.','⚠️');return}
+    if(S.match){showModal('SIMULAÇÃO','Feche a partida em andamento antes.','⚠️');return}
+    var total=leagueGameCount()||34;
+    var left=Math.max(5, total-(S.round||0))+30;
+    // sem confirm — executa direto
+    showModal('SIMULANDO…','Simulando o restante da temporada ('+left+' jogos máx). Aguarde.','⏩');
+    setTimeout(function(){
+      simGames(left,'Restante da temporada');
+    },40);
+  }catch(e){
+    showModal('ERRO', String(e&&e.message||e), '⚠️');
+  }
+}
+if(typeof window!=='undefined'){window.simOneGameFast=simOneGameFast;window.simGames=simGames;window.simWeek=simWeek;window.simMonth=simMonth;window.simSeason=simSeason}
+function toastSim(msg){showModal('AVISO',msg,'⚠️')}
+
+function liveStatLine(){let x=S.match.player;return `${x.pts} pts • ${x.reb} reb • ${x.ast} ast • ${x.stl} roubos • ${x.blk} tocos`}
+function renderLiveMatch(){let m=S.match,t=team(),o=teamById(m.opponent),period=m.quarter<=4?'Q'+m.quarter:'OT '+(m.quarter-4),bars=Array.from({length:Math.max(4,m.quarter)},(_,i)=>`<i class="${i<m.quarter-1?'done':i===m.quarter-1?'current':''}"></i>`).join('');let hName=m.home?t.name:o.name,aName=m.home?o.name:t.name,hScore=m.home?m.homeScore:m.awayScore,aScore=m.home?m.awayScore:m.homeScore;return `<div class="hero"><div class="eyebrow">PARTIDA EM ANDAMENTO • ${period}</div><h2>Jogue cada quarto</h2><p>Escolha como atuar neste período. O jogo calcula a pontuação, os fundamentos e o impacto no placar.</p></div><div class="matchBanner"><div class="matchScore"><div><div class="teamName">${esc(hName)}</div><div class="sub">CASA</div></div><div><div class="score">${hScore} — ${aScore}</div><div class="sub">${period}</div></div><div><div class="teamName">${esc(aName)}</div><div class="sub">FORA</div></div></div><div class="quarterBar">${bars}</div><div class="row small muted"><span>${liveStatLine()}</span><span>${m.player.mins} min</span></div></div><div class="grid2"><div class="stat"><label>Seu desempenho</label><b>${liveStatLine()}</b></div><div class="stat"><label>Parcial do jogo</label><b>${hScore} × ${aScore}</b></div></div><div class="miniCourt" style="margin:12px 0">🏀</div><div class="card"><h3>🎮 Como você vai jogar ${period}?</h3><p class="muted small">As estratégias podem ser diferentes em cada quarto. Em vantagem, administrar energia pode ser inteligente; atrás no placar, aumentar o ritmo pode ajudar.</p><button class="choice" onclick="playQuarter('attack')"><b>🔥 Atacar a cesta e pontuar</b><small>Mais tentativas de arremesso, infiltrações e lances livres. Alto desgaste.</small></button><button class="choice" onclick="playQuarter('balanced')"><b>⚖️ Equilibrado</b><small>Boa mistura de pontuação, defesa e controle. Desgaste moderado.</small></button><button class="choice" onclick="playQuarter('pass')"><b>🧠 Criar para os companheiros</b><small>Mais assistências e passes; menos arremessos individuais.</small></button><button class="choice" onclick="playQuarter('defense')"><b>🛡️ Fechar a defesa</b><small>Buscar rebotes, roubos e tocos. Dificulta o ataque adversário.</small></button><button class="choice" onclick="playQuarter('save')"><b>🧊 Controlar o ritmo</b><small>Conservar energia e evitar erros, mas seu impacto ofensivo diminui.</small></button></div><div class="card"><h3>📻 Narração da partida</h3><div class="log">${m.log.slice().reverse().map(x=>`<p>${esc(x)}</p>`).join('')}</div></div>`}
+function binomial(n,p){let r=0;for(let i=0;i<n;i++)if(Math.random()<p)r++;return r}
+function playQuarter(style){let m=S.match,p=S.player,o=teamById(m.opponent),home=m.home,attrs=p.attrs;let minutes=p.ovr>=o.ovr-4?rand(7.2,10.5):p.ovr>=o.ovr-10?rand(5.4,8.6):rand(3.2,6.7);if(p.coachTrust<35)minutes*=.72;if(p.fatigue>80)minutes*=.74;minutes=Math.max(2,Math.round(minutes));let stamina=1-p.fatigue/230,eff={attack:1.25,balanced:1,pass:.93,defense:.88,save:.67}[style];let shots=Math.max(1,Math.round((minutes/10)*(2.6+(attrs.shoot-60)*.035)*eff*stamina));let threeAtt=Math.max(0,Math.round(shots*(style==='attack'?.46:.36)*(attrs.three/75)));let twoAtt=Math.max(0,shots-threeAtt);let twoPct=clamp(.40+(attrs.finish-60)*.004+(attrs.iq-65)*.001, .25,.72);let threePct=clamp(.27+(attrs.three-55)*.005,.18,.56);if(style==='attack')twoPct+=.025;if(style==='save')twoPct+=.015;let twoM=binomial(twoAtt,clamp(twoPct,.1,.8)),threeM=binomial(threeAtt,threePct);let ftAtt=binomial(Math.round(minutes/4),style==='attack'?.62:.34),ftPct=clamp(.58+(attrs.shoot-55)*.005,.4,.95),ftM=binomial(ftAtt,ftPct);let pts=twoM*2+threeM*3+ftM;let reb=Math.max(0,binomial(Math.max(1,Math.round(minutes/3.8)),clamp(.23+(attrs.rebound-60)*.006+(p.height-188)*.003,.08,.7)));let ast=binomial(Math.max(1,Math.round(minutes/3.3)),clamp(.14+(attrs.pass-55)*.006+(style==='pass'?.16:0),.04,.7));let stl=binomial(Math.max(1,Math.round(minutes/5)),clamp(.06+(attrs.defense-60)*.004+(style==='defense'?.08:0),.02,.4));let blk=binomial(Math.max(1,Math.round(minutes/6)),clamp(.035+(attrs.defense-60)*.003+(p.height-188)*.003+(style==='defense'?.04:0),.01,.35));let tov=binomial(Math.max(1,Math.round(minutes/4.5)),clamp(.13+(style==='attack'?.06:0)+(style==='pass'?.025:0)-(attrs.handle-60)*.002,.025,.35));let x=m.player;x.pts+=pts;x.reb+=reb;x.ast+=ast;x.stl+=stl;x.blk+=blk;x.tov+=tov;x.fgm+=twoM+threeM;x.fga+=twoAtt+threeAtt;x.threeM+=threeM;x.threeA+=threeAtt;x.ftm+=ftM;x.fta+=ftAtt;x.mins+=minutes;let teammateBase=24+((team().ovr-75)*.25)+rand(-4,4);let teamQuarter=Math.max(13,Math.round(teammateBase+pts*.46+ast*.28+stl*.15));let oppBase=25+((o.ovr-75)*.28)+rand(-4.5,4.5);let defenseCut=style==='defense'?2.3:style==='save'?-.4:.8;let oppQuarter=Math.max(14,Math.round(oppBase-defenseCut+(p.fatigue>78?1.2:0)));if(home){m.homeScore+=teamQuarter;m.awayScore+=oppQuarter}else{m.awayScore+=teamQuarter;m.homeScore+=oppQuarter}let descr={attack:`forçou o ataque e marcou ${pts} ponto(s)`,balanced:`contribuiu com ${pts} ponto(s), ${reb} rebote(s) e ${ast} assistência(s)`,pass:`organizou o time: ${ast} assistência(s) e ${pts} ponto(s)`,defense:`fechou a defesa com ${stl} roubo(s), ${blk} toco(s) e ${reb} rebote(s)`,save:`controlou o ritmo e fez ${pts} ponto(s)`};m.log.push(`${m.quarter<=4?'Q'+m.quarter:'Prorrogação'}: ${p.name} ${descr[style]}. Placar do período ${teamQuarter}–${oppQuarter}.`);m.styles.push(style);p.fatigue=clamp(p.fatigue+(style==='attack'?13:style==='defense'?10:style==='save'?5:8)+minutes*.35,0,100);if(m.quarter<4){m.quarter++;}else if(m.homeScore===m.awayScore){m.log.push(m.quarter===4?'Empate no fim do quarto período! Vamos para a prorrogação.':'A prorrogação terminou empatada. Mais cinco minutos!');m.quarter++;}else{completeMatch();return}save();renderGames()}
+function simulateRoundOthers(){
+  if(S._simSilent)return; // durante simulação em massa, pula para não travar
+  let others=shuffle(teamsIn(S.leagueId).filter(t=>t.id!==S.teamId&&t.id!==(S.match&&S.match.opponent)));
+  while(others.length>=2){
+    let a=others.pop(),b=others.pop();
+    let scoreA=Math.round(80+(a.ovr-75)*.8+rand(-13,13)),scoreB=Math.round(80+(b.ovr-75)*.8+rand(-13,13));
+    if(scoreA===scoreB)scoreA++;
+    updateTable(a.id,b.id,scoreA,scoreB);
+  }
+}
+function updateTable(aId,bId,scoreA,scoreB){let a=S.table.find(x=>x.id===aId),b=S.table.find(x=>x.id===bId);if(!a||!b)return;a.for+=scoreA;a.against+=scoreB;b.for+=scoreB;b.against+=scoreA;if(scoreA>scoreB){a.w++;b.l++;a.pts+=2;b.pts+=1;a.streak='V';b.streak='D'}else{b.w++;a.l++;b.pts+=2;a.pts+=1;b.streak='V';a.streak='D'}}
+function playerGrade(x){let fg=x.fga?x.fgm/x.fga:.35,grade=5.9+x.pts*.053+x.reb*.105+x.ast*.105+x.stl*.24+x.blk*.22-x.tov*.17+(fg-.4)*1.3;return clamp(grade,4,10)}
+function completeMatch(){let m=S.match,p=S.player,t=team(),o=teamById(m.opponent),x=m.player,playerScore=m.home?m.homeScore:m.awayScore,oppScore=m.home?m.awayScore:m.homeScore;if(playerScore===oppScore){if(m.home)m.homeScore++;else m.awayScore++;playerScore++;}let win=playerScore>oppScore,grade=playerGrade(x),st=S.seasonStats;if(S.phase==='regular'){updateTable(S.teamId,o.id,playerScore,oppScore);simulateRoundOthers();}S.rivals.forEach(r=>{r.games++;r.points+=Math.max(0,Math.round(rand(7,15)+(r.ovr-70)*.18));r.grade=clamp(r.grade+rand(6.4,8.0),0,1000)});st.games++;st.points+=x.pts;st.rebounds+=x.reb;st.assists+=x.ast;st.steals+=x.stl;st.blocks+=x.blk;st.turnovers+=x.tov;st.minutes+=x.mins;st.gradeSum+=grade;st.high=Math.max(st.high,x.pts);st.threeMade+=x.threeM;st.threeAtt+=x.threeA;st.fgMade+=x.fgm;st.fgAtt+=x.fga;S.career.games++;S.career.points+=x.pts;S.career.rebounds+=x.reb;S.career.assists+=x.ast;S.career.steals+=x.stl;S.career.blocks+=x.blk;S.career.highest=Math.max(S.career.highest,x.pts);if(win){st.wins++;S.career.wins++;p.morale=clamp(p.morale+4,0,100);p.coachTrust=clamp(p.coachTrust+2,0,100);S.rep=clamp(S.rep+1,0,100)}else{st.losses++;S.career.losses++;p.morale=clamp(p.morale-3,0,100);p.coachTrust=clamp(p.coachTrust-(grade<6?3:1),0,100)}let exp=10+grade*4+(win?3:0);p.exp+=exp;if(grade>=7.7){let key=pick(['shoot','three','finish','pass','handle','defense','rebound','athletic','iq']);p.attrs[key]=clamp(p.attrs[key]+(S.difficulty==='easy'?1.5:.8),35,99)}if(grade<5.8)p.coachTrust=clamp(p.coachTrust-2,0,100);p.ovr=playerOverall(p.attrs);updateRole();S.money+=Math.round((x.mins*120)+(grade*250)+(win?500:150));m.log.push(`FIM DE JOGO: ${t.name} ${playerScore} × ${oppScore} ${o.name}. ${win?'Vitória!':'Derrota.'}`);m.log.push(`Sua linha: ${x.pts} pts, ${x.reb} reb, ${x.ast} ast, ${x.stl} roubos, ${x.blk} tocos, ${x.tov} erros • Nota ${grade.toFixed(1)}.`);S.history.unshift({season:S.season,league:S.leagueId,team:t.name,opponent:o.name,score:`${playerScore} × ${oppScore}`,win,stats:{...x,grade:+grade.toFixed(1)}});S.history=S.history.slice(0,100);S.match=null;S.trainingUsed=false;p.fatigue=clamp(p.fatigue+4,0,100);p.age=Math.max(p.age,18);
+if(!S._simSilent)addLog(`${win?'Vitória':'Derrota'} contra ${o.name}: ${x.pts} pontos e nota ${grade.toFixed(1)}.`);
+else if(S._simLog){S._simLog.push((win?'V':'D')+' vs '+o.name+': '+x.pts+'pts');}
+if(S.phase==='playoffs'){finishPlayoffGame(win)}else{S.round++;if(S.round>=leagueGameCount())endRegularSeason()}
+if(!S._simSilent){save();renderAll()}}
+function endRegularSeason(){S.phase='seasonEnd';let rows=[...S.table].sort((a,b)=>b.pts-a.pts||(b.for-b.against)-(a.for-a.against));let rank=rows.findIndex(x=>x.id===S.teamId)+1;let stats=S.seasonStats,avgGrade=avg(stats.gradeSum,stats.games);let mvpPlayer=avgGrade+avg(stats.points,stats.games)*.025+avg(stats.assists,stats.games)*.02;if(rank===1)S.seasonAwards={champion:team().name,mvp:S.player.name};else S.seasonAwards={champion:rows[0]?.name||'—',mvp:rows[0]?.name||'—'};S.leagueHistory.unshift({season:S.season,league:S.leagueId,rank,champion:rows[0]?.name||'—',games:stats.games,ppg:avg(stats.points,stats.games),rpg:avg(stats.rebounds,stats.games),apg:avg(stats.assists,stats.games),grade:avgGrade});if(rank<=8){let candidates=rows.filter(x=>x.id!==S.teamId).slice(0,7);S.playoff={stageIndex:0,stage:'Quartas de final',opponent:(candidates[0]||rows[0]).id,wins:0,losses:0,games:0};S.phase='playoffs';addLog(`Temporada regular encerrada em ${rank}º. Você está nos playoffs!`)}else{S.phase='seasonEnd';addLog(`Temporada regular encerrada em ${rank}º lugar. Você ficou fora dos playoffs.`);prepareOffseason()}}
+function finishPlayoffGame(win){let p=S.playoff;if(win)p.wins++;else p.losses++;p.games++;if(p.wins>=2||p.losses>=2){if(p.wins>=2){p.stageIndex++;if(p.stageIndex>=3){S.career.titles++;S.seasonAwards.playoffChampion=team().name;S.phase='seasonEnd';addLog('🏆 CAMPEÃO! Você conquistou o título da liga!');prepareOffseason();return}let ranked=[...S.table].sort((a,b)=>b.pts-a.pts),candidate=ranked.find(x=>x.id!==S.teamId&&x.id!==p.opponent);p.stage=['Quartas de final','Semifinal','Final'][p.stageIndex];p.opponent=(candidate||ranked[0]).id;p.wins=0;p.losses=0;p.games=0;addLog(`Você avançou para ${p.stage.toLowerCase()}!`)}else{S.phase='seasonEnd';addLog(`Eliminado em ${p.stage.toLowerCase()}.`);prepareOffseason()}}}
+function applyPromotionRelegation(){
+  // 2 caem da 1ª, 2 sobem da 2ª — todas as duplas
+  const pairs=[['NBB','OURO'],['URU1','URU2'],['ARG1','ARG2'],['ESP1','ESP2'],['NBA','GLEAGUE']];
+  S.divisionMoves=S.divisionMoves||{};
+  function standingsFor(l){
+    // times "atualmente" nesta divisão
+    let ts=TEAMS.filter(t=>(S.divisionMoves[t.id]||t.league)===l);
+    if(ts.length<4){
+      // fallback: times com league original
+      ts=TEAMS.filter(t=>t.league===l);
+    }
+    return ts.map(t=>{
+      let live=(S.leagueId===l && S.table)?S.table.find(x=>x.id===t.id):null;
+      let seed=0;for(let c of (t.id+String(S.season)))seed=(seed*31+c.charCodeAt(0))>>>0;
+      let form=((seed%17)-8);
+      let maxG=(LEAGUES[l]&&LEAGUES[l].seasonGames)||30;
+      let wins=live?live.w:clamp(Math.round((t.ovr-55)*.55+form+10),0,maxG);
+      let losses=live?live.l:Math.max(0,maxG-wins);
+      let pts=live?live.pts:(wins*2);
+      let diff=live?(live.for-live.against):Math.round((t.ovr-75)*2+form*3);
+      return {id:t.id,name:t.name,pts,wins,losses,for:diff,against:0};
+    }).sort((x,y)=>y.pts-x.pts||y.for-x.for||y.wins-x.wins);
+  }
+  let playerNote=null;
+  for(let [top,bottom] of pairs){
+    let a=standingsFor(top), b=standingsFor(bottom);
+    if(a.length<3||b.length<3){
+      addLog('Acesso/rebaixamento '+leagueName(top)+'/'+leagueName(bottom)+': dados insuficientes ('+a.length+'/'+b.length+').');
+      continue;
+    }
+    let nDown=Math.min(2,Math.max(1,Math.floor(a.length/8)||2));
+    let nUp=nDown;
+    let relegated=a.slice(-nDown);
+    let promoted=b.slice(0,nUp);
+    for(let r of relegated){
+      S.divisionMoves[r.id]=bottom;
+      addLog('⬇️ '+r.name+' rebaixado: '+leagueName(top)+' → '+leagueName(bottom)+'.');
+      if(r.id===S.teamId){S.leagueId=bottom;leagueView=bottom;playerNote='Seu clube foi rebaixado para '+leagueName(bottom)+'.';}
+    }
+    for(let q of promoted){
+      S.divisionMoves[q.id]=top;
+      addLog('⬆️ '+q.name+' promovido: '+leagueName(bottom)+' → '+leagueName(top)+'.');
+      if(q.id===S.teamId){S.leagueId=top;leagueView=top;playerNote='Seu clube subiu para '+leagueName(top)+'!';}
+    }
+  }
+  if(playerNote){try{showModal('ACESSO E REBAIXAMENTO',playerNote,'⇅')}catch(e){}}
+  return playerNote;
+}
+
+function prepareOffseason(){let p=S.player,st=S.seasonStats||newSeasonStats(),avgGrade=avg(st.gradeSum,st.games),ppg=avg(st.points,st.games);addLog('Calculando acesso e rebaixamento de todas as divisões...');applyPromotionRelegation();
+  if(!S.seasonAwards)S.seasonAwards={};
+  if(ppg>=22&&avgGrade>=8.1){S.career.mvp++;S.seasonAwards.playerMvp=p.name;S.rep=clamp(S.rep+8,0,100)}
+  if(ppg>=15&&avgGrade>=7.4)S.career.allStar++;
+  // título de equipe
+  if(S.seasonAwards.playoffChampion===team().name||S.seasonAwards.champion===team().name){
+    S.career.titles=(S.career.titles||0)+1;
+    if(!S.titleList)S.titleList=[];
+    S.titleList.push({season:S.season,name:leagueName(S.leagueId)+' Champion',team:team().name});
+    addLog('🏆 Título conquistado: '+leagueName(S.leagueId)+' '+S.season);
+  }
+  // patrocínios no fim da temporada
+  trySponsorRenewal();
+  p.age++;p.fatigue=clamp(p.fatigue-35,0,100);
+  S.money+=S.leagueId==='NBA'?160000:S.leagueId==='GLEAGUE'?45000:S.leagueId==='NBB'?50000:25000;
+  S.contractYears=Math.max(0,S.contractYears-1);generateOffers();S.seasonDone=true}
+function trySponsorRenewal(){
+  if(!S.sponsors)S.sponsors=[];
+  const p=S.player;
+  // pagamento anual dos ativos
+  for(const sp of S.sponsors){S.money+=sp.pay;addLog('Patrocínio '+sp.name+': +'+money(sp.pay))}
+  // nova oferta se elegível
+  const avail=SPONSORS.filter(sp=>p.ovr>=sp.minOvr&&(S.rep||0)>=sp.minRep&&!S.sponsors.find(x=>x.id===sp.id));
+  if(avail.length&&Math.random()<0.55){
+    const sp=pick(avail);
+    S.sponsorOffer={...sp};
+    addLog('Oferta de patrocínio: '+sp.name);
+  }
+}
+function acceptSponsor(){
+  if(!S.sponsorOffer)return;
+  const sp=S.sponsorOffer;
+  if(!S.sponsors)S.sponsors=[];
+  // máx 3 sponsors
+  if(S.sponsors.length>=3)S.sponsors.shift();
+  S.sponsors.push({id:sp.id,name:sp.name,pay:sp.pay});
+  S.money+=Math.round(sp.pay*0.5);
+  S.rep=clamp((S.rep||40)+3,0,100);
+  S.sponsorOffer=null;addLog('Assinou com '+sp.name);save();renderAll();
+}
+function refuseSponsor(){S.sponsorOffer=null;save();renderAll()}
+
+function generateOffers(){let p=S.player,all=TEAMS.filter(t=>t.id!==S.teamId),same=all.filter(t=>leagueOf(t)===S.leagueId&&t.ovr<=p.ovr+16&&t.ovr>=p.ovr-17),cross=[];if(S.leagueId==='GLEAGUE'&&p.ovr>=75)cross=TEAMS.filter(t=>leagueOf(t)==='NBA'&&t.ovr<=p.ovr+20);if(S.leagueId==='OURO'&&p.ovr>=68)cross=TEAMS.filter(t=>leagueOf(t)==='NBB');if(S.leagueId==='NBB'&&p.ovr>=78)cross=TEAMS.filter(t=>leagueOf(t)==='NBA'&&t.ovr<=p.ovr+10);let pool=shuffle([...same,...cross]).filter((t,i,a)=>a.findIndex(z=>z.id===t.id)===i).slice(0,5);S.offers=pool.map(t=>({teamId:t.id,salary:Math.round((p.ovr*850+(t.ovr*420))* (leagueOf(t)==='NBA'?3:leagueOf(t)==='GLEAGUE'?1.1:1)),years:Math.random()<.35?3:2,role:t.ovr<=p.ovr+3?'Rotação':'Reserva'}));}
+function nextSeason(){if(S.phase!=='seasonEnd')return;if(S.divisionMoves&&S.divisionMoves[S.teamId]){S.leagueId=S.divisionMoves[S.teamId];leagueView=S.leagueId}let p=S.player,oldSeason=S.season,oldLeague=S.leagueId;S.season++;S.round=0;S.phase='regular';S.seasonDone=false;S.seasonStats=newSeasonStats();S.table=[];S.match=null;S.trainingUsed=false;S.playoff=null;S.seasonAwards=null;S.offers=[];S.contractYears=Math.max(1,S.contractYears);p.fatigue=clamp(p.fatigue-25,0,100);p.morale=clamp(p.morale+5,0,100);if(p.age>32){p.attrs.athletic=clamp(p.attrs.athletic-.7,35,99);p.attrs.finish=clamp(p.attrs.finish-.35,35,99)}p.ovr=playerOverall(p.attrs);initTable();makeRivals();S.clubHistory.push({season:S.season,team:team().name,league:leagueName(S.leagueId)});addLog(`Você iniciou a temporada ${S.season}/${S.season+1} no ${team().name}.`);save();renderAll();go('carreira')}
+function renderTraining(){let p=S.player;if(!p)return;let can=S.phase==='regular'&&!S.match&&!S.trainingUsed&&S.round<leagueGameCount();$('trainingPage').innerHTML=`<div class="hero"><div class="eyebrow">CENTRO DE DESENVOLVIMENTO</div><h2>🏋️ Treine para subir de nível</h2><p>Escolha uma sessão por intervalo entre partidas. Treinos fortes melhoram atributos, mas consomem energia; recuperação ajuda a chegar inteiro ao jogo.</p></div><div class="grid"><div class="stat"><label>Energia</label><b>${100-p.fatigue}%</b><div class="bar" style="margin-top:8px"><i style="width:${100-p.fatigue}%"></i></div></div><div class="stat"><label>Experiência</label><b>${p.exp}</b><small>Acumulada na carreira</small></div><div class="stat"><label>OVR atual</label><b>${p.ovr}</b><small>Potencial oculto</small></div><div class="stat"><label>Treino disponível</label><b>${can?'SIM':'NÃO'}</b><small>${can?'Uma sessão antes do próximo jogo':'Treine após a próxima partida'}</small></div></div>${S.trainingNote?`<div class="notice goodNotice">${esc(S.trainingNote)}</div>`:''}<div class="card"><h3>Escolha sua sessão</h3><button class="choice" ${can?'':'disabled'} onclick="train('shoot')"><b>🎯 Arremesso e bola de três</b><small>Melhora arremesso e precisão de longa distância. Desgaste médio.</small></button><button class="choice" ${can?'':'disabled'} onclick="train('play')"><b>🧠 Controle de bola e passe</b><small>Melhora drible, passe e leitura. Desgaste médio.</small></button><button class="choice" ${can?'':'disabled'} onclick="train('defense')"><b>🛡️ Defesa e rebote</b><small>Melhora marcação, roubos, tocos e rebotes.</small></button><button class="choice" ${can?'':'disabled'} onclick="train('athletic')"><b>⚡ Condicionamento físico</b><small>Melhora velocidade e impulsão, mas aumenta o cansaço.</small></button><button class="choice" ${can?'':'disabled'} onclick="train('recovery')"><b>🧊 Recuperação e fisioterapia</b><small>Recupera energia e moral. Não aumenta atributos técnicos.</small></button><div class="actions"><button class="secondary" onclick="restDay()">😴 Descansar (+25 energia)</button></div></div>`}
+function train(kind){if(S.trainingUsed||S.phase!=='regular'||S.match)return;let p=S.player,a=p.attrs;
+  // progressão mais lenta; potencial é teto oculto
+  let delta=S.difficulty==='easy'?0.55:S.difficulty==='hard'?0.28:0.4;
+  const softCap=(v)=>{const pot=p.potential||88;if(v>=pot-1)return delta*0.15;if(v>=pot-5)return delta*0.35;if(v>=80)return delta*0.55;return delta};
+  const bump=(key,mult=1)=>{const d=softCap(a[key])*mult*(0.85+Math.random()*0.3);a[key]=clamp(a[key]+d,35,Math.min(99,p.potential||99));};
+  if(kind==='shoot'){bump('shoot');bump('three',0.65);p.fatigue+=11;S.trainingNote='Sessão de arremesso concluída (evolução gradual).'}
+  else if(kind==='play'){bump('handle');bump('pass',0.9);p.fatigue+=10;S.trainingNote='Controle e passe evoluíram levemente.'}
+  else if(kind==='defense'){bump('defense');bump('rebound',0.65);p.fatigue+=11;S.trainingNote='Defesa e rebotes melhoraram um pouco.'}
+  else if(kind==='athletic'){bump('athletic');bump('dunk',0.6);p.fatigue+=16;S.trainingNote='Treino físico: ganho moderado, mais fadiga.'}
+  else if(kind==='recovery'){p.fatigue-=24;p.morale+=3;S.trainingNote='Recuperação: energia e moral restauradas.'}
+  Object.keys(a).forEach(k=>a[k]=clamp(a[k],35,99));p.fatigue=clamp(p.fatigue,0,100);p.morale=clamp(p.morale,0,100);p.ovr=playerOverall(a);p.exp=(p.exp||0)+1;S.trainingUsed=true;save();renderAll()}
+function restDay(){if(S.trainingUsed||S.phase!=='regular'||S.match)return;let p=S.player;p.fatigue=clamp(p.fatigue-25,0,100);p.morale=clamp(p.morale+2,0,100);S.trainingNote='Você descansou e recuperou energia.';S.trainingUsed=true;save();renderAll()}
+function renderMarket(){let el=$('marketPage');if(S.phase!=='seasonEnd'){el.innerHTML=`<div class="hero"><div class="eyebrow">MERCADO DE TRANSFERÊNCIAS</div><h2>💼 Seu próximo contrato</h2><p>As propostas aparecem no fim da temporada. Seu desempenho, overall e reputação definem quais clubes demonstram interesse.</p></div><div class="card"><div class="notice">O mercado ainda está fechado. Continue jogando para receber propostas ao final da temporada.</div><div class="row"><span>Clube atual</span><b>${esc(team().name)}</b></div><div class="row"><span>Contrato restante</span><b>${S.contractYears} ano(s)</b></div></div>`;return}el.innerHTML=`<div class="hero"><div class="eyebrow">JANELA DE TRANSFERÊNCIAS</div><h2>📨 O mercado está aberto</h2><p>Escolha entre renovar sua história, buscar uma equipe maior ou dar um passo atrás para ganhar minutos.</p></div><div class="card"><h3>Seu clube atual</h3><div class="row"><b>${esc(team().name)}</b><span class="pill">${leagueName(S.leagueId)}</span></div><p class="muted small">OVR ${team().ovr} • Seu overall ${S.player.ovr} • Saldo ${money(S.money)}</p><button class="secondary" onclick="stayClub()">🤝 Permanecer no clube</button></div><div class="card"><h3>📩 Propostas recebidas (${S.offers.length})</h3>${S.offers.length?S.offers.map((o,i)=>{let t=teamById(o.teamId);return `<div class="playerCard"><div><b>${teamShield(t,'sm')} ${esc(t.name)}</b><small>${leagueName(leagueOf(t))} • ${o.role} • ${o.years} anos • ${money(o.salary)}/temporada</small></div><button class="primary" onclick="acceptOffer(${i})">Aceitar</button></div>`}).join(''):'<div class="notice">Nenhuma proposta formal chegou. Você pode permanecer, renovar ou aguardar outra janela.</div>'}</div>`}
+function acceptOffer(i){let o=S.offers[i];if(!o)return;let old=team();S.teamId=o.teamId;S.leagueId=leagueOf(team());leagueView=S.leagueId;S.money+=o.salary;S.contractYears=o.years;S.player.coachTrust=clamp(S.player.coachTrust+5,0,100);S.player.morale=clamp(S.player.morale+8,0,100);S.clubHistory.push({season:S.season,team:team().name,league:leagueName(S.leagueId)});addLog(`Transferência: ${old.name} → ${team().name}.`);initTable();S.offers=[];save();renderAll();showModal('TRANSFERÊNCIA CONFIRMADA',`Você foi apresentado pelo ${team().name}! Novo contrato de ${o.years} anos na ${leagueName(S.leagueId)}.`, '🏀')}
+function stayClub(){S.contractYears=Math.max(2,S.contractYears);S.money+=Math.round(10000+S.player.ovr*350);S.offers=[];S.player.morale=clamp(S.player.morale+6,0,100);addLog(`Você renovou seu compromisso com ${team().name}.`);save();renderAll();showModal('RENOVAÇÃO',`Você decidiu permanecer no ${team().name} por mais uma etapa da carreira.`, '🤝')}
+function renderLeagues(){let el=$('leaguesPage');let l=leagueView;if(!LEAGUES[l])l=S.leagueId;let rows=teamsIn(l).map(t=>S.table.find(r=>r.id===t.id)||{id:t.id,name:t.name,ovr:t.ovr,w:0,l:0,pts:0,for:0,against:0,streak:'—'}).sort((a,b)=>b.pts-a.pts||(b.for-b.against)-(a.for-a.against));el.innerHTML=`<div class="hero"><div class="eyebrow">CENTRAL DE CAMPEONATOS</div><h2>🏆 Ligas e divisões</h2><p>Consulte os clubes, a força das equipes e a classificação da sua competição.</p></div><div class="card"><div class="field"><label>Escolha a liga</label><select onchange="leagueView=this.value;renderLeagues()">${Object.keys(LEAGUES).map(k=>`<option value="${k}" ${l===k?'selected':''}>${leagueName(k)} — ${LEAGUES[k].division}</option>`).join('')}</select></div><div class="notice">${LEAGUES[l].format}. ${l==='GLEAGUE'?'Neste simulador, 2 clubes sobem da G League e 2 caem da NBA ao fim da temporada (modelo de acesso).':l==='OURO'?'A Liga Ouro é a divisão de acesso do basquete brasileiro.':(['URU1','URU2'].includes(l)?'Uruguai: dois clubes sobem e dois descem entre LUB e El Metro.':(['ARG1','ARG2'].includes(l)?'Argentina: dois clubes sobem e dois descem entre Liga Nacional e Liga Argentina.':(['ESP1','ESP2'].includes(l)?'Espanha: dois clubes sobem e dois descem entre ACB e Primera FEB.':'A tabela é simulada conforme o avanço da sua carreira.')))}</div><div class="tableWrap"><table><thead><tr><th>#</th><th>Clube</th><th>OVR</th><th>J</th><th>V</th><th>D</th><th>Pts liga</th><th>Saldo</th></tr></thead><tbody>${rows.map((r,i)=>{const tm=teamById(r.id);return `<tr class="${r.id===S.teamId?'meRow':''}"><td>${i+1}</td><td>${teamShield(tm,'sm')} ${r.id===S.teamId?'⭐ ':''}${esc(r.name)}</td><td>${r.ovr}</td><td>${r.w+r.l}</td><td class="green">${r.w}</td><td class="red">${r.l}</td><td>${r.pts}</td><td>${r.for-r.against}</td></tr>`}).join('')}</tbody></table></div></div><div class="grid2"><div class="card"><h3>🇺🇾 Uruguai</h3><b>LUB ↔ El Metro</b><p class="muted small">Dois acessos e dois rebaixamentos ao fim de cada temporada.</p></div><div class="card"><h3>🇦🇷 Argentina</h3><b>Liga Nacional ↔ Liga Argentina</b><p class="muted small">Dois acessos e dois rebaixamentos ao fim de cada temporada.</p></div><div class="card"><h3>🇪🇸 Espanha</h3><b>ACB ↔ Primera FEB</b><p class="muted small">Dois acessos e dois rebaixamentos ao fim de cada temporada.</p></div><div class="card"><h3>🇺🇸 Caminho americano</h3><b>NBA → G League</b><p class="muted small">A G League desenvolve atletas e permite convocações, contratos e oportunidades na NBA. Não existe acesso/rebaixamento automático de franquias.</p></div><div class="card"><h3>🇧🇷 Caminho brasileiro</h3><b>NBB ↔ Liga Ouro</b><p class="muted small">Os dois últimos do NBB caem; os dois melhores da Liga Ouro sobem ao fim da temporada.</p></div></div>`}
+function renderStats(){let p=S.player,s=S.seasonStats,c=S.career,ppg=avg(s.points,s.games),rpg=avg(s.rebounds,s.games),apg=avg(s.assists,s.games),grade=avg(s.gradeSum,s.games);$('statsPage').innerHTML=`<div class="hero"><div class="eyebrow">NÚMEROS DA TEMPORADA</div><h2>📊 Estatísticas de ${esc(p.name)}</h2><p>Produção individual, eficiência e conquistas acumuladas na carreira.</p></div><div class="grid"><div class="stat"><label>Pontos por jogo</label><b>${ppg.toFixed(1)}</b><small>${s.points} pontos</small></div><div class="stat"><label>Rebotes por jogo</label><b>${rpg.toFixed(1)}</b><small>${s.rebounds} rebotes</small></div><div class="stat"><label>Assistências por jogo</label><b>${apg.toFixed(1)}</b><small>${s.assists} assistências</small></div><div class="stat"><label>Nota média</label><b>${grade.toFixed(1)}</b><small>${s.games} partidas</small></div><div class="stat"><label>Roubos por jogo</label><b>${avg(s.steals,s.games).toFixed(1)}</b><small>${s.steals} roubos</small></div><div class="stat"><label>Tocos por jogo</label><b>${avg(s.blocks,s.games).toFixed(1)}</b><small>${s.blocks} tocos</small></div><div class="stat"><label>FG%</label><b>${(s.fgAtt?100*s.fgMade/s.fgAtt:0).toFixed(1)}%</b><small>${s.fgMade}/${s.fgAtt} arremessos</small></div><div class="stat"><label>3P%</label><b>${(s.threeAtt?100*s.threeMade/s.threeAtt:0).toFixed(1)}%</b><small>${s.threeMade}/${s.threeAtt} de três</small></div></div><div class="card"><h3>🏅 Estatísticas da carreira</h3><div class="grid2"><div><div class="small muted">Partidas</div><b>${c.games}</b></div><div><div class="small muted">Vitórias</div><b>${c.wins}</b></div><div><div class="small muted">Pontos</div><b>${c.points}</b></div><div><div class="small muted">Rebotes</div><b>${c.rebounds}</b></div><div><div class="small muted">Assistências</div><b>${c.assists}</b></div><div><div class="small muted">Maior pontuação</div><b>${c.highest}</b></div><div><div class="small muted">Títulos</div><b>${c.titles}</b></div><div><div class="small muted">Prêmios de MVP</div><b>${c.mvp}</b></div></div>
+${(S.titleList&&S.titleList.length)?`<div style="margin-top:10px">${S.titleList.map(t=>`<div class="playerCard"><div><b>🏆 ${esc(t.name)}</b><small>${t.season} • ${esc(t.team)}</small></div></div>`).join('')}</div>`:''}
+</div>${S.seasonAwards?`<div class="card"><h3>🏆 Prêmios da temporada</h3><p>Campeão: <b>${esc(S.seasonAwards.playoffChampion||S.seasonAwards.champion)}</b></p><p>MVP: <b>${esc(S.seasonAwards.playerMvp||S.seasonAwards.mvp)}</b></p></div>`:''}`}
+function renderRivals(){let el=$('rivalsPage');let rival=S.rivals||[];el.innerHTML=`<div class="hero"><div class="eyebrow">DISPUTA INDIVIDUAL</div><h2>⚔️ Seus rivais</h2><p>Atletas que disputam posição, minutos, prêmios e reconhecimento na mesma liga. A rivalidade cresce quando vocês se enfrentam.</p></div><div class="grid">${rival.map(r=>{let t=teamById(r.teamId);return `<div class="card"><div class="row"><b>${esc(r.name)}</b><span class="pill">${r.position}</span></div><div class="row" style="margin:8px 0"><span class="muted small">${esc(t.name)}</span><b class="rating">${r.ovr}</b></div><div class="bar"><i style="width:${r.ovr}%"></i></div><div class="grid2" style="margin-top:10px"><div><small class="muted">Pontos</small><b>${r.points}</b></div><div><small class="muted">Jogos</small><b>${r.games}</b></div></div></div>`}).join('')}</div><div class="card"><h3>🔥 Corrida por reconhecimento</h3><p class="muted small">Sua média é ${avg(S.seasonStats.points,S.seasonStats.games).toFixed(1)} pontos por partida e nota ${avg(S.seasonStats.gradeSum,S.seasonStats.games).toFixed(1)}. Para ganhar espaço, mantenha eficiência e ajude o time a vencer.</p></div>`}
+function renderHistory(){let el=$('historyPage');el.innerHTML=`<div class="hero"><div class="eyebrow">ARQUIVO DA CARREIRA</div><h2>📜 Histórico e legado</h2><p>Suas partidas recentes, mudanças de clube e temporadas concluídas.</p></div><div class="card"><h3>🏟️ Trajetória de clubes</h3>${(S.clubHistory||[]).map((h,i)=>`<div class="playerCard"><div><b>${esc(h.team)}</b><small>Temporada ${h.season} • ${esc(h.league)}</small></div><span class="pill">${i===0?'Estreia':'Transferência'}</span></div>`).join('')}</div><div class="card"><h3>📅 Últimas partidas</h3>${S.history.length?`<div class="tableWrap"><table><thead><tr><th>Temporada</th><th>Adversário</th><th>Placar</th><th>Resultado</th><th>PTS</th><th>REB</th><th>AST</th><th>Nota</th></tr></thead><tbody>${S.history.slice(0,25).map(h=>`<tr><td>${h.season}</td><td>${esc(h.opponent)}</td><td>${h.score}</td><td class="${h.win?'green':'red'}">${h.win?'Vitória':'Derrota'}</td><td>${h.stats.pts}</td><td>${h.stats.reb}</td><td>${h.stats.ast}</td><td>${h.stats.grade}</td></tr>`).join('')}</tbody></table></div>`:'<p class="muted small">Sua primeira partida ainda não foi disputada.</p>'}</div><div class="card"><h3>📰 Diário da carreira</h3><div class="log">${S.logs.slice(0,30).map(x=>`<p>${esc(x)}</p>`).join('')}</div></div><div class="card"><h3>🏆 Temporadas concluídas</h3>${S.leagueHistory.length?S.leagueHistory.map(h=>`<div class="playerCard"><div><b>${h.season}/${h.season+1} • ${leagueName(h.league)}</b><small>Posição ${h.rank}º • Campeão: ${esc(h.champion)}</small></div><span class="pill">${h.games} jogos</span></div>`).join(''):'<p class="muted small">Nenhuma temporada concluída.</p>'}</div>`}
+function renderConfig(){ $('configPage').innerHTML=`<div class="hero"><div class="eyebrow">PREFERÊNCIAS E DADOS</div><h2>⚙️ Configurações</h2><p>Controle o seu arquivo de carreira e configure a experiência de jogo.</p></div><div class="card"><h3>💾 Salvamento</h3><p class="muted small">O progresso é salvo automaticamente neste navegador. Limpar os dados do navegador pode apagar a carreira.</p><div class="actions"><button class="secondary" onclick="exportSave()">⬇️ Exportar carreira</button><button class="secondary" onclick="document.getElementById('importSave').click()">⬆️ Importar carreira</button><input type="file" id="importSave" accept="application/json" class="hidden" onchange="importSaveFile(event)"></div></div><div class="card"><h3>🎮 Sobre o simulador</h3><p class="muted small">A força das equipes e as competições são parâmetros de simulação. Estatísticas de atletas e resultados são gerados pelo jogo e não representam resultados oficiais.</p><div class="notice">NBA e G League: o jogo simula chamadas/contratos entre ligas, não rebaixamento de franquias. NBB e Liga Ouro: o jogo oferece caminhos de acesso através do desempenho e do mercado.</div></div><div class="card"><h3>🗑️ Reiniciar</h3><p class="muted small">Apaga a carreira salva neste navegador e volta à tela de criação.</p><button class="danger" onclick="resetCareer()">Apagar carreira</button></div>`}
+function exportSave(){let blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='quadra-carreira-save.json';a.click();URL.revokeObjectURL(url)}
+function importSaveFile(e){let f=e.target.files?.[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);if(!d||d.version!==1||!d.player||!d.teamId)throw new Error('Arquivo inválido');S=d;save();renderAll();showModal('CARREIRA IMPORTADA','Seu progresso foi carregado com sucesso.','💾')}catch(err){showModal('ERRO AO IMPORTAR','Esse arquivo não parece ser um salvamento válido do Quadra Carreira.','⚠️')}};r.readAsText(f)}
+function showModal(title,body,icon='🏀'){ $('modalRoot').innerHTML=`<div class="modalBack" onclick="if(event.target===this)closeModal()"><div class="modal"><div style="font-size:34px">${icon}</div><h2>${esc(title)}</h2><p class="muted">${esc(body)}</p><button class="primary" style="width:100%;margin-top:12px" onclick="closeModal()">Continuar</button></div></div>`}
+function closeModal(){$('modalRoot').innerHTML=''}
+function resetCareer(){if(!confirm('Apagar a carreira atual e começar do zero?'))return;localStorage.removeItem('quadraCarreiraSaveV1');S=defaultState();selectedTeam=null;document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));$('inicio').classList.add('active');$('setupView').classList.remove('hidden');$('homeView').classList.add('hidden');renderAll();renderTeamChoices();renderNav()}
+function renderSeasonEnd(){let rank=getPositionRank(),s=S.seasonStats;return `<div class="card seasonEnd"><div class="eyebrow">TEMPORADA ${S.season}/${S.season+1} CONCLUÍDA</div><h2>🏁 Balanço da temporada</h2><div class="grid"><div class="stat"><label>Colocação</label><b>${rank}º</b></div><div class="stat"><label>Pontos por jogo</label><b>${avg(s.points,s.games).toFixed(1)}</b></div><div class="stat"><label>Rebotes por jogo</label><b>${avg(s.rebounds,s.games).toFixed(1)}</b></div><div class="stat"><label>Assistências por jogo</label><b>${avg(s.assists,s.games).toFixed(1)}</b></div></div><div class="notice ${rank<=8?'goodNotice':'warn'}">${S.seasonAwards?.playoffChampion?`Você foi campeão! ${team().name} levantou o troféu.`:rank<=8?'Você disputou os playoffs. Veja o resultado da pós-temporada.':'Temporada encerrada fora da zona de playoffs.'}</div><p>MVP da liga: <b>${esc(S.seasonAwards?.playerMvp||S.seasonAwards?.mvp||'—')}</b> • Campeão: <b>${esc(S.seasonAwards?.playoffChampion||S.seasonAwards?.champion||'—')}</b></p><button class="primary" onclick="go('mercado')">Abrir mercado de transferências →</button> <button class="secondary" onclick="nextSeason()">Continuar no clube</button></div>`}
+// O render principal mostra uma camada de fim de temporada quando não há outra partida a disputar.
+const _renderHome=renderHome;
+renderHome=function(){_renderHome();if(S?.phase==='seasonEnd')$('homeView').innerHTML=renderSeasonEnd()+$('homeView').innerHTML};
+function renderCareerEnded(){return ''}
+function renderHomeFallback(){return ''}
+function finishOffseasonNow(){nextSeason()}
+// Atualização inicial e recuperação do salvamento.
+S=load();if(S.started&&S.player&&teamById(S.teamId)){if(!S.seasonStats)S.seasonStats=newSeasonStats();if(!S.table?.length)initTable();if(!S.rivals)makeRivals();}else{S=defaultState();}
+window.simWeek=simWeek;window.simMonth=simMonth;window.simSeason=simSeason;window.simGames=simGames;window.acceptSponsor=acceptSponsor;window.refuseSponsor=refuseSponsor;
+renderAll();if(!S.started){$('setupView').classList.remove('hidden');renderTeamChoices()}else if(S.phase==='seasonEnd'){/* mercado permanece acessível */}
+</script>
+</body>
+</html>

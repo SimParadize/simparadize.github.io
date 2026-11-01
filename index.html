@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#060914">
+<title>Sim Sports Paradize</title>
+<style>
+@property --gc{syntax:'<color>';inherits:true;initial-value:#6a8dff}
+:root{--bg:#060914;--p2:#1a2236;--l:#2b3548;--t:#eef2f8;--m:#a6b1c4;--gc:#6a8dff;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--t);font-family:"Avenir Next","Segoe UI",system-ui,sans-serif;line-height:1.5;overflow-x:hidden}
+.aura{position:fixed;inset:0;z-index:0;transition:--gc .7s;background:radial-gradient(1000px 650px at 12% -8%,color-mix(in srgb,var(--gc) 30%,transparent),transparent 62%),radial-gradient(900px 650px at 105% 105%,color-mix(in srgb,color-mix(in srgb,var(--gc) 30%,#7a2cff) 38%,transparent),transparent 60%)}
+#sky{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.glow{position:fixed;left:0;top:0;width:460px;height:460px;margin:-230px 0 0 -230px;border-radius:50%;pointer-events:none;z-index:0;transform:translate(var(--x,60vw),var(--y,25vh));background:radial-gradient(circle,color-mix(in srgb,var(--gc) 24%,transparent),transparent 65%);transition:--gc .7s}
+.app{position:relative;z-index:1;display:grid;grid-template-columns:272px minmax(0,1fr);min-height:100vh}
+.side{position:sticky;top:0;height:100vh;padding:18px 14px;border-right:1px solid #ffffff14;background:#080c1acc;backdrop-filter:blur(14px);display:flex;flex-direction:column;gap:6px}
+.brand{display:flex;gap:12px;align-items:center;padding:4px 6px 16px;color:inherit;text-decoration:none}
+.brand .logo{width:60px;height:60px;flex:none}
+.brand h1{margin:0;font-size:15px;line-height:1.15;font-weight:900}
+.brand small{color:var(--m);font-size:12px}
+.logo{filter:drop-shadow(0 0 16px color-mix(in srgb,var(--cc,var(--gc)) 65%,transparent))}
+.logo svg{display:block;width:100%;height:100%;overflow:visible}
+.rg{transform-origin:60px 60px;transform:rotate(var(--rot,0deg))}
+.ob{transform-origin:60px 60px;animation:sp 5s linear infinite reverse}
+.tw{transform-box:fill-box;transform-origin:center;animation:tw 2.4s ease-in-out infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+@keyframes tw{50%{transform:scale(.4);opacity:.5}}
+.cap{font-size:12px;color:var(--m);margin:4px 8px}
+.nav{display:flex;flex-direction:column;gap:6px}
+.nav a{--c:#6a8dff;display:flex;align-items:center;gap:11px;padding:9px;min-height:52px;border-radius:15px;border:1px solid transparent;color:var(--t);text-decoration:none;transition:background .25s,transform .25s}
+.nav a:hover{background:#ffffff0d;transform:translateX(4px)}
+.nav a.on{background:linear-gradient(90deg,color-mix(in srgb,var(--c) 24%,transparent),#ffffff08);border-color:color-mix(in srgb,var(--c) 55%,transparent);box-shadow:0 0 22px -8px var(--c)}
+.ni{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:#0b1020;border:1px solid var(--l);font-size:19px;flex:none}
+.nt b{display:block;font-size:14px}.nt small{display:block;color:var(--m);font-size:11px}
+.ch{margin-left:auto;color:var(--m)}
+.foot{margin-top:auto;padding:10px 8px 0;color:var(--m);font-size:12px}
+main{padding:28px clamp(16px,4vw,52px) 70px;max-width:1160px;width:100%}
+section.in{animation:up .55s cubic-bezier(.2,.8,.2,1)}
+@keyframes up{from{opacity:0;transform:translateY(18px)}}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:20px;margin-bottom:34px}
+.hero h2{margin:0;font-family:"Arial Black","Avenir Next",system-ui,sans-serif;font-size:clamp(34px,5.4vw,68px);line-height:.98;letter-spacing:-.03em;font-weight:900;background:linear-gradient(90deg,#fff,#9cc4ff,#ff9aa8,#ffc98a,#9af0c4,#fff);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:sh 9s linear infinite}
+@keyframes sh{to{background-position:-300% 0}}
+.hero p{margin:14px 0 0;color:#cdd6e4;font-size:17px;max-width:44ch}
+.hint{margin-top:14px;color:var(--m);font-size:13px}
+.orbit{position:relative;width:min(430px,78vw);aspect-ratio:1;margin:30px auto}
+.ol{position:absolute;inset:0;border-radius:50%;border:1px dashed #ffffff2b}
+.ol.b{inset:17%;border-style:solid;border-color:#ffffff12}
+.core{position:absolute;inset:27%}
+.arm{position:absolute;inset:0;transform:rotate(calc(var(--a) + var(--rot,0deg)))}
+.sat{position:absolute;left:50%;top:0;width:74px;height:74px;margin:-37px 0 0 -37px;border:0;border-radius:50%;cursor:pointer;font:inherit;font-size:32px;color:inherit;background:radial-gradient(circle at 32% 28%,color-mix(in srgb,var(--c) 70%,#fff),var(--c) 55%,color-mix(in srgb,var(--c) 40%,#000));box-shadow:0 0 30px -4px var(--c);transform:rotate(calc(-1*(var(--a) + var(--rot,0deg))));transition:scale .25s}
+.sat:hover,.sat:focus-visible{scale:1.2}
+.sat span{position:absolute;top:100%;left:50%;translate:-50% 4px;font-size:12px;font-weight:800;white-space:nowrap;text-shadow:0 2px 6px #000}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px}
+.card{--c:#6a8dff;--rx:0deg;--ry:0deg;--mx:50%;--my:0%;position:relative;display:flex;flex-direction:column;gap:11px;padding:22px;border-radius:24px;overflow:hidden;background:linear-gradient(160deg,#1b2338ee,#0e1424ee);border:1px solid color-mix(in srgb,var(--c) 38%,#ffffff14);transform:perspective(900px) rotateX(var(--rx)) rotateY(var(--ry));transition:transform .18s,box-shadow .3s}
+.card:hover{box-shadow:0 22px 50px -22px var(--c)}
+.card::before{content:"";position:absolute;inset:0;background:radial-gradient(260px circle at var(--mx) var(--my),color-mix(in srgb,var(--c) 30%,transparent),transparent 70%);opacity:0;transition:opacity .3s;pointer-events:none}
+.card:hover::before{opacity:1}
+.card>*{position:relative}
+.bd{display:grid;place-items:center;width:62px;height:62px;border-radius:20px;font-size:34px;background:linear-gradient(145deg,color-mix(in srgb,var(--c) 60%,#fff),var(--c));box-shadow:0 10px 26px -10px var(--c);animation:fl 4s ease-in-out infinite}
+@keyframes fl{50%{translate:0 -6px}}
+.card h3{margin:2px 0 0;font-size:24px;font-weight:900}
+.card p{margin:0;color:var(--m);font-size:14px;flex:1}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{padding:4px 11px;border-radius:99px;background:#ffffff0d;border:1px solid #ffffff1a;font-size:12px;transition:background .2s,border-color .2s}
+.chip:hover{background:color-mix(in srgb,var(--c,#6a8dff) 25%,transparent);border-color:var(--c,#6a8dff)}
+.btn{--c:#6a8dff;position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:11px 22px;border-radius:14px;border:0;background:linear-gradient(135deg,color-mix(in srgb,var(--c) 70%,#fff),var(--c));color:#07111d;font:inherit;font-weight:900;text-decoration:none;cursor:pointer;box-shadow:0 10px 26px -10px var(--c);transition:transform .2s,box-shadow .2s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 16px 32px -10px var(--c)}
+.btn.play::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:-60%;background:linear-gradient(100deg,transparent,#ffffff77,transparent);animation:shine 2.8s ease-in-out infinite}
+@keyframes shine{60%,100%{left:130%}}
+.btn.ghost{background:transparent;color:var(--t);border:1px solid #ffffff2b;box-shadow:none}
+.btn.ghost:hover{background:#ffffff12}
+a:focus-visible,button:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.dh{--c:#6a8dff;display:flex;align-items:center;gap:24px;padding:28px;border-radius:28px;margin-bottom:18px;background:radial-gradient(600px 260px at 0 0,color-mix(in srgb,var(--c) 34%,transparent),transparent 70%),linear-gradient(120deg,#1a2236f2,#0e1424f2);border:1px solid var(--c);box-shadow:0 0 60px -20px var(--c)}
+.dh .bd{width:104px;height:104px;font-size:60px;border-radius:32px;flex:none}
+.dh h2{margin:0;font-family:"Arial Black","Avenir Next",system-ui,sans-serif;font-size:clamp(30px,5vw,54px);line-height:1;letter-spacing:-.02em}
+.dh p{margin:6px 0 0;color:#d3dbe8}
+.dh .t{color:var(--c);font-weight:800}
+.cols{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:18px}
+.box{padding:22px;border-radius:22px;background:#111829e6;border:1px solid #ffffff17}
+.box h3{margin:0 0 10px;font-size:18px}
+.box p{margin:0 0 14px;color:#d3dbe8}
+.box ul{margin:0;padding:0;list-style:none}
+.box li{display:flex;gap:10px;margin:8px 0;color:#d3dbe8;animation:up .5s both;animation-delay:calc(var(--i)*70ms)}
+.box li::before{content:"✦";color:var(--c);flex:none}
+.url{color:var(--m);font-size:13px;word-break:break-all;margin:0 0 10px}
+.go{margin-top:20px;display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.go .btn.play{min-width:220px;min-height:54px;font-size:17px}
+.pn{margin-left:auto;display:flex;gap:8px}
+[hidden]{display:none!important}
+@media(hover:none){.glow{display:none}}
+@media(max-width:860px){
+.app{display:block}
+.side{z-index:5;height:auto;flex-direction:row;align-items:center;gap:8px;padding:calc(8px + env(safe-area-inset-top,0px)) 10px 8px;border-right:0;border-bottom:1px solid #ffffff14;overflow-x:auto}
+.brand{padding:0}.brand div,.cap,.foot,.nt small,.ch{display:none}
+.brand .logo{width:44px;height:44px}
+.nav{flex-direction:row}.nav a{min-height:44px;padding:6px 10px;white-space:nowrap}
+.hero{grid-template-columns:1fr}.cols{grid-template-columns:1fr}
+.dh{flex-direction:column;align-items:flex-start}.pn{margin-left:0}
+}
+@media(prefers-reduced-motion:reduce){*,::before,::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="aura"></div><canvas id="sky" aria-hidden="true"></canvas><div class="glow" id="glow"></div>
+<div class="app">
+<aside class="side">
+<a class="brand" href="#" aria-label="Sim Sports Paradize, início"><span class="logo"></span><div><h1>Sim Sports Paradize</h1><small>Sua carreira. Seu esporte.</small></div></a>
+<div class="cap">Escolha seu esporte</div>
+<nav class="nav" id="nav" aria-label="Menu principal"></nav>
+<div class="foot">SSP, o paraíso dos simuladores.</div>
+</aside>
+<main>
+<section id="home">
+<div class="hero">
+<div><h2>Sim Sports Paradize</h2><p>Seis carreiras esportivas para viver do seu jeito. Escolha um planeta, descubra como o jogo funciona e entre em campo.</p><div class="hint">Os jogos ficam na pasta <b>jogos/</b> ao lado deste index. Passe o mouse na órbita para desacelerar · clique no fundo para soltar estrelas.</div></div>
+<div class="orbit" id="orbit"><div class="ol"></div><div class="ol b"></div><span class="logo core"></span></div>
+</div>
+<div class="cards" id="cards"></div>
+</section>
+<section id="game" hidden></section>
+</main>
+</div>
+<script>
+const G=[
+{id:'futebol',n:'Futebol',ic:'⚽',c:'#3d8bff',u:'jogos/futebol.html',t:'Simulador de Futebol BR',
+ s:'Comece como um jogador de 17 anos e escreva sua história nos gramados.',
+ d:'Crie seu jogador, escolha onde começar e conquiste a confiança do técnico e o apoio da torcida. Temporada após temporada você disputa ligas e copas, negocia propostas e luta por uma vaga na seleção.',
+ f:['Crie seu jogador e escolha o clube inicial','Calendário de partidas, ligas e copas como Libertadores, Sul-Americana, Champions League e Copa do Brasil','Mercado com propostas e empresário','Técnico, apoio da torcida e galeria de títulos','Seleção e modo Versus local para dois rivais','Modo opcional de eventos de vida, com finanças, família e relacionamentos'],
+ m:['Carreira','Estatísticas','Ligas','Competições','Mercado','Histórico','Versus','Configurações','Relacionamentos']},
+{id:'f1',n:'Fórmula 1',ic:'🏎️',c:'#e4475d',u:'jogos/f1.html',t:'F1 Carreira 2026',
+ s:'Do primeiro contrato ao título mundial no grid de 2026.',
+ d:'Crie seu piloto e construa uma carreira na Fórmula 1. Em cada fim de semana de corrida você prepara o carro, escolhe pneus, negocia contratos com as equipes e enfrenta seus rivais na briga pelo campeonato.',
+ f:['Crie seu piloto com nome e número','Fins de semana de corrida com treinos livres (TL1 a TL3) e escolha de pneus','Garagem, equipe e patrocinadores','Mercado de pilotos e contratos','Tabelas de pilotos e equipes, rivais e histórico','Lesões e fim de carreira'],
+ m:['Início','Carreira','Garagem','Mercado','Tabelas','Rivais','Histórico','Config.']},
+{id:'basquete',n:'Basquete',ic:'🏀',c:'#f28a24',u:'jogos/basquete.html',t:'Quadra Carreira',
+ s:'Construa seu legado nas quadras, da base aos playoffs.',
+ d:'Crie seu jogador, defina posição e número da camisa e evolua com treinos. Antes de cada partida você se prepara, busca pontos e rebotes e leva seu time para os playoffs em ligas como NBB e NBA.',
+ f:['Crie seu jogador, com posição e número','Preparação para cada partida e estatísticas de jogo','Treinos para evoluir seus atributos','Mercado e contratos','Ligas, playoffs, rivais e fim de temporada','Histórico de títulos'],
+ m:['Início','Carreira','Partidas','Treino','Mercado','Ligas','Estatísticas','Rivais','Histórico','Config.']},
+{id:'volei',n:'Vôlei',ic:'🏐',c:'#3bd28b',u:'jogos/volei.html',t:'Vôlei Carreira',
+ s:'Cada set conta: saque, levantamento e muita estratégia.',
+ d:'Construa sua carreira no vôlei acompanhando as partidas em quadra e tomando decisões táticas no calor do jogo. Treine, cuide do elenco e da comissão técnica e brigue por Superliga, playoffs e uma vaga na seleção.',
+ f:['Partidas em quadra com decisões táticas, como saque, levantamento rápido e largada','Treinamento, elenco e comissão técnica','Mercado e contratos','Superliga, playoffs e competições','Seleção, estatísticas e histórico de títulos'],
+ m:['Início','Partidas','Treinamento','Elenco','Mercado','Competição','Estatísticas','Seleção','Carreira']},
+{id:'ufc',n:'UFC / MMA',ic:'🥊',c:'#a855f7',u:'jogos/ufc.html',t:'UFC Carreira',
+ s:'Do circuito regional ao cinturão do UFC.',
+ d:'Crie seu lutador, escolha categoria e estilo e suba do circuito regional ao Contender Series até o UFC. Treine atributos, gerencie lesões, assine patrocínios e dispute o cinturão da sua divisão.',
+ f:['Crie seu lutador com nome, categoria e estilo','Circuito regional, Contender Series e UFC','Lutas com táticas em pé, solo e ritmo','Treino, coach, forma, moral e fadiga','Lesões, patrocínios e ranking oficial','Defesa de cinturão, vida pessoal e aposentadoria'],
+ m:['Carreira','Treino','Ranking','Patrocínios','Histórico','Vida']},
+{id:'nfl',n:'NFL',ic:'🏈',c:'#f5c542',u:'jogos/nfl.html',t:'NFL Carreira',
+ s:'Do Draft ao Super Bowl na liga americana.',
+ d:'Declare-se para o Draft, escolha o time que te selecionou e construa uma carreira na NFL. Jogue 18 semanas, dispute os playoffs e lute pelo Super Bowl enquanto gerencia treinos, contratos e patrocínios.',
+ f:['Draft com escolha de time e posição','Temporada regular de 18 semanas e playoffs','Planos de jogo e clutch no último drive','Treino semanal, lesões e forma','Contratos, salário e patrocínios','Pro Bowl, MVP, OPOY, DPOY e Super Bowl'],
+ m:['Carreira','Treino','Tabela','Patrocínios','Histórico','Vida']}
+];
+const N=()=>G.length;
+const step=()=>360/N();
+const $=i=>document.getElementById(i),R=document.documentElement,DEF='#6a8dff';
+let SP=1,PX=0,PY=0,P=[],tint='#9cc4ff',cur=null,LN=0,hv=0,hw=0,hc='#6a8dff';
+const base=()=>cur?cur.c:DEF;
+const setC=c=>{R.style.setProperty('--gc',c);tint=c==DEF?'#9cc4ff':c};
+/* logo SSP */
+const logo=()=>{const i=++LN;return `<svg viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="t${i}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" style="stop-color:color-mix(in srgb,var(--cc,var(--gc)) 45%,#fff)"/></linearGradient><radialGradient id="b${i}" cx=".5" cy=".3" r=".85"><stop offset="0" style="stop-color:color-mix(in srgb,var(--cc,var(--gc)) 58%,#0b1226)"/><stop offset="1" stop-color="#070b16"/></radialGradient></defs>
+<g class="rg">${G.map((g,k)=>{const seg=360/G.length;const dash=Math.max(28,seg*0.55);const gap=339-dash;return `<circle cx="60" cy="60" r="53" fill="none" stroke="${g.c}" stroke-width="7" stroke-linecap="round" stroke-dasharray="${dash.toFixed(1)} ${gap.toFixed(1)}" transform="rotate(${(k*seg-125.65).toFixed(2)} 60 60)"/>`}).join('')}</g>
+<circle cx="60" cy="60" r="44" fill="url(#b${i})"/><circle cx="60" cy="60" r="44" fill="none" style="stroke:var(--cc,var(--gc));stroke-opacity:.7" stroke-width="1.5"/>
+<text x="60" y="72" text-anchor="middle" font-family="Arial Black,system-ui,sans-serif" font-weight="900" font-size="35" letter-spacing="-2" fill="url(#t${i})">SSP</text>
+<path class="tw" d="M0-9Q0 0 9 0Q0 0 0 9Q0 0-9 0Q0 0 0-9Z" transform="translate(88 33)" fill="#fff"/>
+<path class="tw" d="M0-6Q0 0 6 0Q0 0 0 6Q0 0-6 0Q0 0 0-6Z" transform="translate(33 90)" fill="#9cc4ff" style="animation-delay:1s"/>
+<g class="ob"><circle cx="60" cy="3" r="3" style="fill:var(--cc,#fff)"/></g></svg>`};
+document.querySelectorAll('.logo').forEach(e=>e.innerHTML=logo());
+/* menu, órbita e cards */
+$('nav').innerHTML=`<a href="#" data-id="" data-c="${DEF}" style="--c:${DEF}"><span class="ni">🏠</span><span class="nt"><b>Início</b><small>Todos os jogos</small></span><span class="ch">›</span></a>`+
+G.map(g=>`<a href="#${g.id}" data-id="${g.id}" data-c="${g.c}" style="--c:${g.c}"><span class="ni">${g.ic}</span><span class="nt"><b>${g.n}</b><small>${g.t}</small></span><span class="ch">›</span></a>`).join('');
+$('orbit').insertAdjacentHTML('beforeend',G.map((g,k)=>`<div class="arm" style="--a:${(k*step()).toFixed(2)}deg"><button type="button" class="sat" style="--c:${g.c}" data-c="${g.c}" data-go="${g.id}" aria-label="${g.n}">${g.ic}<span>${g.n}</span></button></div>`).join(''));
+$('cards').innerHTML=G.map(g=>`<article class="card" style="--c:${g.c}" data-c="${g.c}"><span class="bd">${g.ic}</span><h3>${g.n}</h3><p>${g.s}</p><div class="chips">${g.m.slice(0,4).map(x=>`<span class="chip">${x}</span>`).join('')}</div><a class="btn" style="--c:${g.c}" href="#${g.id}" data-go="${g.id}">Conhecer o jogo</a></article>`).join('');
+// clique confiável no menu e nos cards
+$('nav').addEventListener('click',e=>{
+  const a=e.target.closest('a[data-id]');
+  if(!a)return;
+  e.preventDefault();
+  goGame(a.dataset.id||'');
+});
+$('cards').addEventListener('click',e=>{
+  const a=e.target.closest('a[data-go]');
+  if(!a)return;
+  e.preventDefault();
+  goGame(a.dataset.go);
+});
+
+/* página de cada jogo */
+function gameByHash(){
+  const raw=(location.hash||'').replace(/^#/,'').trim();
+  if(!raw)return null;
+  return G.find(x=>x.id===raw)||null;
+}
+function goHome(e){if(e)e.preventDefault();if(location.hash)location.hash='';else show()}
+function goGame(id,e){if(e)e.preventDefault();if(!id){goHome();return}if(location.hash==='#'+id)show();else location.hash=id}
+function show(){
+  try{
+    const g=gameByHash();cur=g||null;
+    const home=$('home'), game=$('game');
+    if(home)home.hidden=!!g;
+    if(game)game.hidden=!g;
+    document.querySelectorAll('#nav a').forEach(a=>{
+      const on=a.dataset.id===(g?g.id:'');
+      a.classList.toggle('on',on);
+      if(on)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');
+    });
+    setC(base());
+    document.title=g?(g.n+' - Sim Sports Paradize'):'Sim Sports Paradize';
+    if(g&&game){
+      const k=G.indexOf(g),n=N(),pv=G[(k+n-1)%n],nx=G[(k+1)%n];
+      game.innerHTML=`<div class="dh" style="--c:${g.c}"><span class="bd" style="--c:${g.c}">${g.ic}</span><div><h2>${g.n}</h2><p class="t">${g.t}</p><p>${g.s}</p></div></div>
+<div class="cols" style="--c:${g.c}"><div class="box"><h3>Sobre o jogo</h3><p>${g.d}</p><h3>O que você vai fazer</h3><ul>${g.f.map((x,i)=>'<li style="--i:'+i+'">'+x+'</li>').join('')}</ul></div>
+<div class="box"><h3>Menu do jogo</h3><div class="chips" style="margin-bottom:18px">${g.m.map(x=>'<span class="chip">'+x+'</span>').join('')}</div><h3>Arquivo local</h3><p class="url">${g.u}</p><p class="url" style="margin-top:-4px">Pasta: jogos/ (ao lado do index.html)</p><button class="btn ghost" id="cp" type="button">Copiar caminho</button></div></div>
+<div class="go" style="--c:${g.c}"><a class="btn play" style="--c:${g.c}" href="${g.u}">Jogar ${g.n}</a><a class="btn ghost" href="#" id="btnHome">Voltar ao início</a><div class="pn"><a class="btn ghost" href="#${pv.id}">‹ ${pv.n}</a><a class="btn ghost" href="#${nx.id}">${nx.n} ›</a></div></div>`;
+      const cp=$('cp');
+      if(cp)cp.onclick=e=>{try{navigator.clipboard.writeText(g.u)}catch(x){}e.target.textContent='Copiado!';setTimeout(()=>e.target.textContent='Copiar caminho',1600)};
+      const bh=$('btnHome');
+      if(bh)bh.onclick=goHome;
+    }
+    const sec=$(g?'game':'home');
+    if(sec){sec.classList.remove('in');void sec.offsetWidth;sec.classList.add('in')}
+    SP=7;try{scrollTo(0,0)}catch(e){}
+  }catch(err){console.error('show()',err)}
+}
+addEventListener('hashchange',show);
+
+addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&location.hash)location.hash='';
+  if(cur&&(e.key==='ArrowRight'||e.key==='ArrowLeft')){const n=N();location.hash=G[(G.indexOf(cur)+(e.key==='ArrowRight'?1:n-1))%n].id}
+});
+$('orbit').addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b){e.preventDefault();goGame(b.dataset.go)}});
+/* interação: cor do ambiente, brilho do cursor, tilt dos cards, estrelas */
+document.addEventListener('pointerover',e=>{const t=e.target.closest('[data-c]');if(t){setC(t.dataset.c);hv=1;hc=t.dataset.c}});
+document.addEventListener('pointerout',e=>{if(!(e.relatedTarget&&e.relatedTarget.closest&&e.relatedTarget.closest('[data-c]'))){setC(base());hv=0}});
+addEventListener('pointermove',e=>{PX=e.clientX/innerWidth-.5;PY=e.clientY/innerHeight-.5;const g=$('glow').style;g.setProperty('--x',e.clientX+'px');g.setProperty('--y',e.clientY+'px')});
+addEventListener('pointerdown',e=>burst(e.clientX,e.clientY,26));
+$('cards').addEventListener('pointermove',e=>{const c=e.target.closest('.card');if(!c||e.pointerType==='touch')return;const r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height,s=c.style;s.setProperty('--rx',(.5-y)*10+'deg');s.setProperty('--ry',(x-.5)*12+'deg');s.setProperty('--mx',x*100+'%');s.setProperty('--my',y*100+'%')});
+$('cards').addEventListener('pointerout',e=>{const c=e.target.closest('.card');if(c&&!c.contains(e.relatedTarget)){c.style.setProperty('--rx','0deg');c.style.setProperty('--ry','0deg')}});
+/* céu de estrelas voando */
+const cv=$('sky'),x=cv.getContext('2d'),rm=matchMedia('(prefers-reduced-motion: reduce)').matches,col=['#fff','#9cc4ff','#ff9aa8','#ffc98a','#9af0c4'];
+let W,H,D,S=[],K=[];
+function rs(){D=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;cv.width=W*D;cv.height=H*D;x.setTransform(D,0,0,D,0,0);
+  S=Array.from({length:Math.round(W*H/8000)},()=>({x:Math.random()*W,y:Math.random()*H,z:Math.random()*.9+.1,p:Math.random()*6.3,c:col[Math.random()<.75?0:1+Math.floor(Math.random()*4)],b:Math.random()<.08}))}
+function star(px,py,r,c,a){x.globalAlpha=a;x.fillStyle=c;x.beginPath();x.moveTo(px,py-r);x.quadraticCurveTo(px,py,px+r,py);x.quadraticCurveTo(px,py,px,py+r);x.quadraticCurveTo(px,py,px-r,py);x.quadraticCurveTo(px,py,px,py-r);x.fill()}
+function burst(px,py,n){if(rm)return;for(let i=0;i<n;i++){const a=Math.random()*6.283,v=1.5+Math.random()*4;P.push({x:px,y:py,vx:Math.cos(a)*v,vy:Math.sin(a)*v,l:0,r:2+Math.random()*4,c:Math.random()<.5?tint:'#fff'})}}
+function fr(t){
+  x.clearRect(0,0,W,H);SP+=(1-SP)*.04;
+  for(const s of S){
+    if(!rm){s.x-=s.z*.55*SP;s.y+=s.z*.2*SP;if(s.x<-10){s.x=W+10;s.y=Math.random()*H}if(s.y>H+10)s.y=-10}
+    const a=(.3+.7*Math.abs(Math.sin(t/900+s.p)))*(.4+s.z*.6),px=s.x-PX*50*s.z,py=s.y-PY*50*s.z;
+    if(s.b)star(px,py,3+s.z*5,s.c,a);else{x.globalAlpha=a;x.fillStyle=s.c;x.beginPath();x.arc(px,py,.4+s.z*1.4,0,6.283);x.fill()}
+  }
+  if(!rm&&Math.random()<.008&&K.length<3)K.push({x:W*(.4+Math.random()*.6),y:Math.random()*H*.5,v:9+Math.random()*6,l:0});
+  K=K.filter(k=>k.l<70&&k.x>-200);
+  for(const k of K){const g=x.createLinearGradient(k.x,k.y,k.x+90,k.y-45);g.addColorStop(0,tint);g.addColorStop(1,'#fff0');x.globalAlpha=1-k.l/70;x.strokeStyle=g;x.lineWidth=2.2;x.beginPath();x.moveTo(k.x,k.y);x.lineTo(k.x+90,k.y-45);x.stroke();k.x-=k.v;k.y+=k.v*.5;k.l++}
+  P=P.filter(p=>p.l<55);
+  for(const p of P){p.x+=p.vx;p.y+=p.vy;p.vx*=.95;p.vy*=.95;p.l++;star(p.x,p.y,p.r*(1-p.l/70),p.c,1-p.l/55)}
+  x.globalAlpha=1;
+  if(!rm)requestAnimationFrame(fr);
+}
+rs();addEventListener('resize',()=>{rs();if(rm)fr(0)});show();requestAnimationFrame(fr);
+/* roda girando devagar; o centro assume a cor do jogo que está no topo */
+const orb=$('orbit'),bl=document.querySelector('.brand .logo');let rot=0,lt=0;
+function spin(t){
+  const dt=Math.min(.05,(t-lt)/1000||0);lt=t;
+  rot=(rot+dt*(rm?5:8)*(orb.matches(':hover')?.4:1))%360;
+  [orb,bl].forEach(e=>e.style.setProperty('--rot',rot.toFixed(2)+'deg'));
+  if(!$('home').hidden){
+    const n=N(),st=step();
+    const u=rot/st,i=Math.floor(u)%n,f=u-Math.floor(u),e=f*f*(3-2*f);
+    hw+=((hv?1:0)-hw)*.12;
+    const A=G[(n-i)%n].c,B=G[(n-i+n-1)%n].c;
+    let c=`color-mix(in srgb,${B} ${(e*100).toFixed(1)}%,${A})`;
+    if(hw>.01)c=`color-mix(in srgb,${hc} ${(hw*100).toFixed(1)}%,${c})`;
+    orb.style.setProperty('--cc',c);
+  }
+  requestAnimationFrame(spin);
+}
+requestAnimationFrame(spin);
+</script>
+</body>
+</html>

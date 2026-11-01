@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NFL Carreira — Simulador Completo</title>
+<style>
+:root{
+  --bg:#0e0d08;--p:#1a1810;--p2:#25221a;--l:#463f2a;--t:#f5f1e6;--m:#b3aa91;
+  --a:#f5c542;--g:#3bd28b;--r:#ef6262;--y:#e4bb55;color-scheme:dark
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:radial-gradient(900px 500px at 50% -10%,#3a3010,transparent 60%),var(--bg);
+  color:var(--t);font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;line-height:1.45
+}
+
+/* TOP / BRAND */
+.top{
+  position:sticky;top:0;z-index:10;
+  background:#0e0d08ee;border-bottom:1px solid var(--l);
+  padding:10px 14px 8px;backdrop-filter:blur(8px)
+}
+.brand{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.brand h1{margin:0;font-size:18px;font-weight:900;letter-spacing:-.3px}
+.brand .sub{color:var(--m);font-size:12px;margin-top:2px}
+.brand-stats{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.brand-pill{
+  background:var(--p2);border:1px solid var(--l);border-radius:999px;
+  padding:4px 10px;font-size:11px;font-weight:700;white-space:nowrap
+}
+.brand-pill b{color:var(--a)}
+
+/* NAV */
+nav{
+  display:flex;gap:6px;overflow-x:auto;margin-top:8px;
+  scrollbar-width:none;-webkit-overflow-scrolling:touch
+}
+nav::-webkit-scrollbar{display:none}
+nav button.mainNavItem{
+  display:flex;align-items:center;gap:8px;
+  min-width:max-content;padding:8px 12px;
+  background:var(--p);color:var(--t);
+  border:1px solid var(--l);border-radius:12px;cursor:pointer;
+  transition:border-color .15s,background .15s
+}
+nav button.mainNavItem:hover{border-color:var(--a)}
+nav button.mainNavItem.active{
+  background:var(--a);border-color:var(--a);color:#1c1503
+}
+nav button.mainNavItem.active .navText small{color:#5a4a18}
+nav button.mainNavItem.active .navChevron{color:#1c1503}
+.navIcon{font-size:18px;line-height:1;flex-shrink:0}
+.navText{display:flex;flex-direction:column;align-items:flex-start;line-height:1.15;text-align:left}
+.navText b{font-size:12px;font-weight:800}
+.navText small{font-size:10px;color:var(--m);font-weight:500;max-width:110px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.navChevron{font-size:14px;opacity:.5;margin-left:2px}
+
+button,select,input{font:inherit}
+button{
+  color:var(--t);background:var(--p2);border:1px solid var(--l);
+  border-radius:10px;padding:9px 13px;cursor:pointer
+}
+button:hover:not(:disabled){border-color:var(--a)}
+button.pri,button.primary{background:var(--a);border-color:var(--a);color:#1c1503;font-weight:800}
+button:disabled{opacity:.4;cursor:not-allowed}
+button.warn{background:#3a2a12;border-color:var(--y);color:var(--y)}
+button.danger{background:#2a1218;border-color:var(--r);color:var(--r)}
+select,input{
+  background:#0a0905;color:var(--t);border:1px solid var(--l);
+  border-radius:9px;padding:10px;width:100%
+}
+
+main{max-width:1100px;margin:auto;padding:14px 16px 90px}
+.page{display:none}
+.page.active{display:block;animation:pageIn .22s ease}
+@keyframes pageIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.card{
+  background:var(--p);border:1px solid var(--l);border-radius:14px;
+  padding:15px;margin-bottom:12px
+}
+.card h2{margin:0 0 10px;font-size:16px}
+.card h3{margin:12px 0 8px;font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:9px}
+.stat,.st{
+  background:var(--p2);border:1px solid var(--l);border-radius:11px;padding:11px
+}
+.stat small,.st small{color:var(--m);display:block;font-size:11px}
+.stat b,.st b,.big{font-size:19px;font-weight:900}
+.bar{height:7px;background:#0a0905;border-radius:9px;overflow:hidden;margin-top:5px}
+.bar i{display:block;height:100%;background:var(--a);transition:width .2s}
+.bar.r i{background:var(--r)}.bar.g i{background:var(--g)}.bar.y i{background:var(--y)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #ffffff0d}
+.m,.muted{color:var(--m)}.w,.up{color:var(--g)}.d,.down{color:var(--r)}.y{color:var(--y)}
+.badge{
+  display:inline-block;background:var(--p2);border:1px solid var(--l);
+  border-radius:8px;padding:3px 8px;font-size:11px;margin:2px
+}
+.badge.g{border-color:var(--g);color:var(--g)}
+.badge.r{border-color:var(--r);color:var(--r)}
+.badge.y{border-color:var(--y);color:var(--y)}
+.badge.a{border-color:var(--a);color:var(--a)}
+.me{background:#2a2418;font-weight:800}
+
+.ov{
+  position:fixed;inset:0;background:#000c;z-index:30;
+  display:flex;align-items:flex-start;justify-content:center;padding:14px;overflow:auto
+}
+.ov[hidden]{display:none}
+.box{
+  width:min(640px,100%);background:var(--p);border:1px solid var(--a);
+  border-radius:18px;padding:18px;margin:auto
+}
+.sc{font-size:32px;font-weight:900;text-align:center;margin:10px 0;letter-spacing:-1px}
+.acts{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:12px}
+.notice{
+  padding:11px;background:#1a1610;border-left:4px solid var(--a);
+  border-radius:8px;margin:10px 0;font-size:13px
+}
+.notice.bad{border-color:var(--r);background:#1a1010}
+.notice.good{border-color:var(--g);background:#0f1a14}
+.notice.warn{border-color:var(--y);background:#1a1810}
+
+#floatingAdvance{
+  position:fixed;right:16px;bottom:18px;z-index:70;
+  min-width:160px;max-width:calc(100vw - 32px);
+  box-shadow:0 10px 28px rgba(0,0,0,.35);
+  display:none;font-weight:800
+}
+#floatingAdvance.show{display:block}
+
+@media(max-width:600px){
+  main{padding:10px 10px 88px}
+  .top{padding:8px 10px 6px}
+  .brand h1{font-size:16px}
+  .brand .sub{font-size:11px}
+  nav{margin-top:6px;gap:5px}
+  nav button.mainNavItem{padding:7px 10px;border-radius:10px}
+  .navIcon{font-size:16px}
+  .navText b{font-size:11px}
+  .navText small{display:none}
+  .navChevron{display:none}
+  .card{padding:12px;border-radius:12px}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+  .stat b,.st b,.big{font-size:17px}
+  .sc{font-size:26px}
+  #floatingAdvance{left:12px;right:12px;width:calc(100vw - 24px);bottom:14px}
+}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="brand">
+    <div>
+      <h1>🏈 NFL Carreira</h1>
+      <div class="sub" id="brandSub">Simulador de futebol americano · carreira completa</div>
+    </div>
+    <div class="brand-stats" id="brandStats"></div>
+  </div>
+  <nav id="nav"></nav>
+</div>
+
+<main id="m"></main>
+<button id="floatingAdvance" class="pri" onclick="skipWeek()">⏭ Pular semana (bye)</button>
+<div class="ov" id="ov" hidden><div class="box" id="bx"></div></div>
+
+<script>
+const $=i=>document.getElementById(i);
+const rn=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const cl=(v,a,b)=>Math.max(a,Math.min(b,v));
+const pk=a=>a[rn(0,a.length-1)];
+const chance=p=>Math.random()<p;
+const KEY='nfl_carreira_v2';
+
+/* Posições: [nome, atributos[], impacto no placar, labels de stats] */
+const POS={
+  QB:['Quarterback',['Arremesso','Precisão','Visão','Mobilidade','Físico'],0.55,['Jardas','TDs','INTs']],
+  RB:['Running Back',['Velocidade','Força','Agilidade','Mãos','Visão'],0.28,['Jardas','TDs','Fumbles']],
+  WR:['Wide Receiver',['Velocidade','Mãos','Rotas','Agilidade','Físico'],0.32,['Jardas','TDs','Recepções']],
+  TE:['Tight End',['Mãos','Bloqueio','Rotas','Força','Físico'],0.22,['Jardas','TDs','Recepções']],
+  LB:['Linebacker',['Tackle','Força','Velocidade','Cobertura','Instinto'],0.30,['Tackles','Sacks','INTs']],
+  CB:['Cornerback',['Cobertura','Velocidade','Agilidade','Mãos','Instinto'],0.26,['Tackles','INTs','PDs']],
+  DE:['Defensive End',['Pass Rush','Força','Velocidade','Tackle','Resistência'],0.28,['Tackles','Sacks','FF']]
+};
+
+const TEAMS=[
+  {n:'Buffalo Bills',conf:'AFC',div:'East'},
+  {n:'Miami Dolphins',conf:'AFC',div:'East'},
+  {n:'New England Patriots',conf:'AFC',div:'East'},
+  {n:'New York Jets',conf:'AFC',div:'East'},
+  {n:'Baltimore Ravens',conf:'AFC',div:'North'},
+  {n:'Cincinnati Bengals',conf:'AFC',div:'North'},
+  {n:'Cleveland Browns',conf:'AFC',div:'North'},
+  {n:'Pittsburgh Steelers',conf:'AFC',div:'North'},
+  {n:'Houston Texans',conf:'AFC',div:'South'},
+  {n:'Indianapolis Colts',conf:'AFC',div:'South'},
+  {n:'Jacksonville Jaguars',conf:'AFC',div:'South'},
+  {n:'Tennessee Titans',conf:'AFC',div:'South'},
+  {n:'Denver Broncos',conf:'AFC',div:'West'},
+  {n:'Kansas City Chiefs',conf:'AFC',div:'West'},
+  {n:'Las Vegas Raiders',conf:'AFC',div:'West'},
+  {n:'Los Angeles Chargers',conf:'AFC',div:'West'},
+  {n:'Dallas Cowboys',conf:'NFC',div:'East'},
+  {n:'New York Giants',conf:'NFC',div:'East'},
+  {n:'Philadelphia Eagles',conf:'NFC',div:'East'},
+  {n:'Washington Commanders',conf:'NFC',div:'East'},
+  {n:'Chicago Bears',conf:'NFC',div:'North'},
+  {n:'Detroit Lions',conf:'NFC',div:'North'},
+  {n:'Green Bay Packers',conf:'NFC',div:'North'},
+  {n:'Minnesota Vikings',conf:'NFC',div:'North'},
+  {n:'Atlanta Falcons',conf:'NFC',div:'South'},
+  {n:'Carolina Panthers',conf:'NFC',div:'South'},
+  {n:'New Orleans Saints',conf:'NFC',div:'South'},
+  {n:'Tampa Bay Buccaneers',conf:'NFC',div:'South'},
+  {n:'Arizona Cardinals',conf:'NFC',div:'West'},
+  {n:'Los Angeles Rams',conf:'NFC',div:'West'},
+  {n:'San Francisco 49ers',conf:'NFC',div:'West'},
+  {n:'Seattle Seahawks',conf:'NFC',div:'West'}
+];
+
+const PLANS={ag:'Agressivo',eq:'Equilibrado',co:'Conservador'};
+const RD=['Wild Card','Divisional','Conference Championship','Super Bowl'];
+const SPONSORS=[
+  {name:'Nike',minFame:10,pay:1.2,req:0},
+  {name:'Under Armour',minFame:20,pay:2.5,req:1},
+  {name:'Gatorade',minFame:35,pay:4.0,req:2},
+  {name:'Beats',minFame:50,pay:7.0,req:3},
+  {name:'State Farm',minFame:65,pay:12.0,req:5},
+  {name:'Pepsi',minFame:80,pay:20.0,req:8}
+];
+
+const NAV_ITEMS=[
+  ['car','🏠','Carreira','Semana, jogo e status'],
+  ['tre','🏋️','Treino','Atributos e preparação'],
+  ['tab','📊','Tabela','Classificação da liga'],
+  ['spon','💼','Patrocínios','Marcas e contratos'],
+  ['his','📜','Histórico','Temporadas e prêmios'],
+  ['life','❤️','Vida','Equipe, títulos e pessoal']
+];
+
+let S=null,tab='car';
+
+const mil=v=>'US$ '+(Math.round(v*10)/10).toLocaleString('pt-BR')+' mi';
+const usd=v=>'US$ '+Math.round(v).toLocaleString('pt-BR');
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+
+function ovr(){return Math.round(S.a.reduce((x,y)=>x+y,0)/S.a.length)}
+function injuryActive(){return S.injury&&S.injury.weeksLeft>0}
+function me(){return S.teams[S.ti]}
+function op(){return S.teams[S.opp]}
+
+function newGame(){
+  const pos=$('fp').value;
+  const teamSel=$('ft');
+  const chosenTi=teamSel?parseInt(teamSel.value,10):-1;
+  const base=Array.from({length:5},()=>56+rn(0,12));
+  S={
+    name:$('fn').value.trim()||'Jogador',
+    nick:$('fk').value.trim(),
+    pos,age:21,a:base,
+    yr:1,money:0,week:1,phase:'reg',
+    po:null,ss:[0,0,0],gp:0,hist:[],
+    champs:0,pb:0,mvp:0,dpoy:0,opoy:0,
+    tr:false,ret:false,tot:[0,0,0],
+    form:75,morale:70,fatigue:0,injury:null,
+    fame:5,fans:500,streak:0,
+    sponsors:[],sponsorOffer:null,
+    events:[],life:{partner:null,kids:0},
+    peakOvr:0,trainedThisWeek:false
+  };
+  S.peakOvr=ovr();
+  const o=ovr();
+  const r=o>=70?1:o>=66?2:o>=62?3:o>=58?4:5;
+  S.teams=TEAMS.map(t=>({
+    n:t.n,conf:t.conf,div:t.div,
+    s:rn(58,86),w:0,l:0,t:0
+  }));
+  // Time escolhido pelo jogador, ou aleatório se "Aleatório"
+  S.ti=(Number.isFinite(chosenTi)&&chosenTi>=0&&chosenTi<32)?chosenTi:rn(0,31);
+  S.sal=[12,5,2.2,1.1,0.75][r-1];
+  S.cy=r<=2?4:rn(3,4);
+  S.draft=`Rodada ${r} do Draft · ${TEAMS[S.ti].n}`;
+  startSeason();
+  save();
+  tab='car';
+  ui();
+  modal(`<h2>🏈 Draft Day</h2>
+    <p>Você foi selecionado na <b>rodada ${r}</b> pelo <b>${TEAMS[S.ti].n}</b> (${TEAMS[S.ti].conf} ${TEAMS[S.ti].div}).</p>
+    <p class="m">Contrato inicial: ${S.cy} anos · ${mil(S.sal)} por temporada.</p>
+    <p class="m">${S.draft}</p>
+    <button class="pri" onclick="closeM()">Começar temporada</button>`);
+}
+
+function startSeason(){
+  S.teams.forEach(t=>{t.w=0;t.l=0;t.t=0});
+  S.week=1;S.phase='reg';S.ss=[0,0,0];S.gp=0;
+  S.tr=false;S.trainedThisWeek=false;S.po=null;
+  pickOpp();
+}
+
+function pickOpp(){
+  let o;
+  if(S.phase==='po'){
+    if(!S.po.pool.length){S.opp=S.ti;return}
+    o=S.po.pool.splice(rn(0,S.po.pool.length-1),1)[0];
+  }else{
+    do{o=rn(0,31)}while(o===S.ti);
+  }
+  S.opp=o;
+}
+
+/* ========== GERAÇÃO DE STATS ========== */
+function genStats(plan,pm){
+  const o=ovr(),p=S.pos,ag=plan==='ag',co=plan==='co';
+  const formF=S.form/100;
+  const tdBase=Math.max(0,Math.round(pm/8*{QB:.75,RB:.4,WR:.35,TE:.25,LB:0,CB:0,DE:0}[p]*formF+rn(-1,1)*.4));
+
+  if(p==='QB'){
+    const att=rn(24,40),cmp=Math.round(att*cl(.48+o/280+(co?.04:0)+rn(-5,5)/100,.42,.82));
+    const y=Math.round(cmp*(10.5+o/28+(ag?1.8:0)-(co?1.3:0)+rn(-15,15)/10)*formF);
+    const it=Math.max(0,rn(0,1)+(ag?rn(0,1):0)-(o>84?1:0));
+    return[y,tdBase,it,`${cmp}/${att} passes · ${y} jardas · ${tdBase} TD · ${it} INT`];
+  }
+  if(p==='RB'){
+    const c=rn(12,26)+(co?4:0);
+    const y=Math.round(c*(3.5+o/36+rn(-12,12)/10)*formF);
+    const f=chance(.07)?1:0;
+    return[y,tdBase,f,`${c} corridas · ${y} jardas · ${tdBase} TD · ${f} fumble`];
+  }
+  if(p==='WR'||p==='TE'){
+    const t=rn(p==='TE'?4:6,p==='TE'?9:13);
+    const r=Math.round(t*cl(.52+o/300+rn(-8,8)/100,.42,.9));
+    const y=Math.round(r*(9.2+o/24+rn(-18,18)/10)*formF);
+    return[y,tdBase,r,`${r} recepções (${t} alvos) · ${y} jardas · ${tdBase} TD`];
+  }
+  if(p==='LB'||p==='DE'){
+    const tk=rn(4,11)+(o>80?2:0);
+    const sk=chance(.16+o/450)?rn(1,2+(p==='DE'?1:0)):0;
+    const it=chance(.04+o/900)?1:0;
+    return[tk,sk,it,`${tk} tackles · ${sk} sack(s) · ${it} INT`];
+  }
+  // CB
+  const tk=rn(3,8);
+  const it=chance(.08+o/600)?1:0;
+  const pd=rn(0,3)+(o>78?1:0);
+  return[tk,it,pd,`${tk} tackles · ${it} INT · ${pd} passes defendidos`];
+}
+
+/* ========== JOGO ========== */
+function play(plan){
+  if(S.ret||injuryActive()){toast('Você não pode jogar agora.');return}
+  const mine=me(),oppT=op(),o=ovr();
+  const imp=POS[S.pos][2];
+  const planMul=plan==='ag'?1.12:plan==='co'?0.92:1;
+  const formMul=0.85+S.form/200;
+  const fatiguePen=S.fatigue>60?-(S.fatigue-60)/80:0;
+  const minePow=mine.s+(o-70)*imp*planMul*formMul+fatiguePen;
+  const diff=(minePow-oppT.s)/3.2+rn(-10,10)+(plan==='ag'?rn(-4,4):0);
+
+  let pm=cl(Math.round(20+diff/2+rn(-6,6)),0,55);
+  let po=cl(Math.round(20-diff/2+rn(-6,6)),0,55);
+  if(pm===po)pm+=rn(3,7);
+
+  const g=genStats(plan,pm);
+
+  // Clutch no final se placar apertado
+  if(Math.abs(pm-po)<=7&&S.phase!=='po'||Math.abs(pm-po)<=10){
+    const pr=cl(.32+o/240+(plan==='co'?0.08:0),.28,.82);
+    modal(`<h2>⏱️ Último drive</h2>
+      <div class="sc">${shortName(mine.n)} ${pm} × ${po} ${shortName(oppT.n)}</div>
+      <p>Jogo decidido nos minutos finais. O que você faz?</p>
+      <div class="acts">
+        <button class="pri" onclick="clutch(${pm},${po},${pr},1,'${plan}')">🎯 Arriscar jogada longa</button>
+        <button onclick="clutch(${pm},${po},.60,0,'${plan}')">🛡️ Jogar seguro</button>
+      </div>`);
+    window.__g=g;
+    return;
+  }
+  finish(pm,po,g);
+}
+
+function clutch(pm,po,p,risk,plan){
+  const g=window.__g||genStats(plan,pm);
+  const ok=Math.random()<p;
+  if(risk)pm+=ok?rn(3,8):-rn(0,4);
+  else pm+=ok?rn(2,4):0;
+  if(pm===po)pm+=3;
+  const extra=ok?(risk?'A jogada longa deu certo!':'Você controlou o relógio.'):(risk?'A jogada longa falhou.':'O drive não rendeu o suficiente.');
+  finish(pm,po,g,extra);
+}
+
+function shortName(n){
+  const parts=n.split(' ');
+  return parts[parts.length-1];
+}
+
+function finish(pm,po,g,extra){
+  const mine=me(),oppT=op(),w=pm>po,poPhase=S.phase==='po';
+  const line=typeof g[3]==='string'?g[3]:'';
+
+  S.ss[0]+=g[0];S.ss[1]+=g[1];S.ss[2]+=g[2];
+  S.gp++;S.tot[0]+=g[0];S.tot[1]+=g[1];S.tot[2]+=g[2];
+  S.tr=false;S.trainedThisWeek=false;
+  S.fatigue=cl(S.fatigue+rn(8,18),0,100);
+  S.form=cl(S.form+(w?rn(2,7):-rn(3,9)),20,100);
+  S.morale=cl(S.morale+(w?rn(3,8):-rn(5,12)),10,100);
+  S.streak=w?Math.max(0,S.streak)+1:Math.min(0,S.streak)-1;
+  S.fans+=w?rn(40,180):-rn(20,90);
+  S.fame+=w?rn(1,3):0;
+
+  // Lesão
+  if(chance(w?0.06:0.12)){
+    const types=['tornozelo','joelho','ombro','mão','concussão leve','isquiotibiais'];
+    const weeks=rn(1,6);
+    S.injury={type:pk(types),weeksLeft:weeks};
+    addEvent('Lesão: '+S.injury.type+' ('+weeks+' sem.)');
+  }
+
+  let msg='';
+  if(!poPhase){
+    if(w){mine.w++;oppT.l++}else{mine.l++;oppT.w++}
+    // Simula resto da liga
+    S.teams.forEach((t,i)=>{
+      if(i!==S.ti&&i!==S.opp){
+        if(chance(.48+(t.s-70)/100))t.w++;else t.l++;
+      }
+    });
+    S.week++;
+    if(S.week<=18)pickOpp();
+  }else if(w){
+    S.po.round++;
+    if(S.po.round<=4)pickOpp();
+  }
+
+  const over=poPhase?(!w||S.po.round>4):S.week>18;
+  const roundLabel=poPhase?(RD[Math.min(S.po.round-(w?1:0),3)]||'Playoffs'):'';
+
+  modal(`<h2>${w?'🏆 Vitória':'💔 Derrota'}${poPhase?' · '+roundLabel:''}</h2>
+    <div class="sc">${shortName(mine.n)} ${pm} × ${po} ${shortName(oppT.n)}</div>
+    ${extra?`<p class="m">${extra}</p>`:''}
+    <p>Sua atuação: <b>${line}</b></p>
+    ${S.injury&&S.injury.weeksLeft?`<p class="d">🩹 Lesão: ${S.injury.type} (${S.injury.weeksLeft} semanas)</p>`:''}
+    <button class="pri" onclick="${over?'endSeason('+(poPhase&&w)+')':'closeM()'}">Continuar</button>`);
+  save();
+}
+
+/* ========== TEMPORADA ========== */
+function endSeason(champ){
+  const mine=me();
+  if(S.phase==='reg'){
+    // Top 7 por conferência (simplificado: top 14 geral → 7 por conf)
+    const afc=S.teams.map((t,i)=>({t,i})).filter(x=>x.t.conf==='AFC').sort((a,b)=>b.t.w-a.t.w||b.t.s-a.t.s);
+    const nfc=S.teams.map((t,i)=>({t,i})).filter(x=>x.t.conf==='NFC').sort((a,b)=>b.t.w-a.t.w||b.t.s-a.t.s);
+    const playoffAFC=afc.slice(0,7).map(x=>x.i);
+    const playoffNFC=nfc.slice(0,7).map(x=>x.i);
+    const inPlayoffs=playoffAFC.includes(S.ti)||playoffNFC.includes(S.ti);
+
+    if(inPlayoffs){
+      const myConf=mine.conf;
+      const pool=(myConf==='AFC'?playoffAFC:playoffNFC).filter(i=>i!==S.ti);
+      S.phase='po';
+      S.po={round:1,pool};
+      pickOpp();
+      save();closeM();ui();
+      modal(`<h2>🏟️ Playoffs!</h2>
+        <p><b>${mine.n}</b> terminou ${mine.w}-${mine.l} e está nos playoffs da ${myConf}.</p>
+        <p class="m">Fase eliminatória: Wild Card → Divisional → Conference → Super Bowl.</p>
+        <button class="pri" onclick="closeM()">Vamos lá</button>`);
+      return;
+    }
+    return offseason(false,false);
+  }
+  offseason(true,champ);
+}
+
+function offseason(po,champ){
+  const mine=me(),o=ovr();
+  const pb=o>=76&&chance(.4+(o-76)/50);
+  const mvp=o>=86&&mine.w>=12&&chance(.35);
+  const opoy=['QB','RB','WR','TE'].includes(S.pos)&&o>=84&&chance(.2);
+  const dpoy=['LB','CB','DE'].includes(S.pos)&&o>=84&&chance(.2);
+
+  if(champ)S.champs++;
+  if(pb)S.pb++;
+  if(mvp)S.mvp++;
+  if(opoy)S.opoy++;
+  if(dpoy)S.dpoy++;
+
+  S.money+=S.sal;
+  // Patrocínios anuais
+  S.sponsors.forEach(sp=>{S.money+=sp.pay});
+
+  S.hist.unshift({
+    y:S.yr,age:S.age,team:mine.n,w:mine.w,l:mine.l,
+    ss:S.ss.slice(),
+    res:champ?'🏆 Campeão do Super Bowl':po?'Eliminado nos playoffs':'Fora dos playoffs',
+    pb,mvp,opoy,dpoy,o
+  });
+
+  // Evolução de atributos
+  const a=S.age;
+  S.a=S.a.map(v=>cl(v+(a<=24?rn(0,3):a<=28?rn(-1,2):a<=31?rn(-2,1):rn(-4,0)),30,99));
+  S.peakOvr=Math.max(S.peakOvr,ovr());
+  S.age++;S.yr++;S.cy--;
+  S.fatigue=cl(S.fatigue-30,0,100);
+  S.form=cl(S.form+rn(5,15),40,100);
+
+  let note='';
+  if(S.cy<=0){
+    const newSal=Math.max(0.8,Math.round(Math.pow(Math.max(0,ovr()-52),2)*.18)/10);
+    S.sal=newSal;
+    S.cy=rn(2,5);
+    note=`Novo contrato: ${S.cy} anos · ${mil(S.sal)}/temporada.`;
+    addEvent('Renovou contrato: '+mil(S.sal)+'/ano');
+  }
+
+  // Força dos times flutua
+  S.teams.forEach(t=>t.s=cl(t.s+rn(-5,5),52,90));
+
+  // Oferta de patrocínio
+  if(chance(.3+S.fame/150))trySponsorOffer();
+
+  // Aposentadoria
+  if(S.age>=35&&chance(0.12+(S.age-35)*0.06))S.ret=true;
+
+  startSeason();
+  save();ui();
+
+  modal(`<h2>📅 Fim da temporada ${S.yr-1}</h2>
+    <p><b>${mine.n}</b>: ${mine.w}-${mine.l}. ${champ?'🏆 Campeão do Super Bowl!':po?'Eliminado nos playoffs.':'Fora dos playoffs.'}</p>
+    ${pb?'<p>⭐ Pro Bowl</p>':''}
+    ${mvp?'<p>🏅 MVP da liga!</p>':''}
+    ${opoy?'<p>🟠 Offensive Player of the Year</p>':''}
+    ${dpoy?'<p>🔵 Defensive Player of the Year</p>':''}
+    <p class="m">Nível agora: ${ovr()}. ${note}</p>
+    ${S.ret?'<p><b>Você chegou ao fim da linha. Carreira encerrada.</b></p>':''}
+    <button class="pri" onclick="closeM()">${S.ret?'Ver histórico':'Próxima temporada'}</button>`);
+}
+
+/* ========== TREINO ========== */
+function trainA(i){
+  if(S.trainedThisWeek||S.ret||injuryActive())return;
+  S.trainedThisWeek=true;
+  const a=S.age;
+  const chanceUp=a<26?0.55:a<30?0.32:a<33?0.15:0.06;
+  if(chance(chanceUp)){
+    S.a[i]=Math.min(99,S.a[i]+1);
+    toast('+1 em '+POS[S.pos][1][i]);
+  }else toast('Treino feito, mas sem evolução desta vez.');
+  S.fatigue=cl(S.fatigue+rn(4,10),0,100);
+  S.form=cl(S.form+rn(0,3),20,100);
+  save();ui();
+}
+
+function rest(){
+  S.fatigue=cl(S.fatigue-rn(15,28),0,100);
+  S.form=cl(S.form+rn(2,6),20,100);
+  S.morale=cl(S.morale+rn(1,5),10,100);
+  if(injuryActive()){
+    S.injury.weeksLeft--;
+    if(S.injury.weeksLeft<=0){addEvent('Recuperado da lesão ('+S.injury.type+').');S.injury=null;toast('Recuperado!')}
+  }
+  save();ui();
+  toast('Descanso recuperou energia.');
+}
+
+function skipWeek(){
+  if(S.ret||S.phase==='po')return;
+  // Bye week / skip
+  S.week++;
+  S.trainedThisWeek=false;
+  S.fatigue=cl(S.fatigue-rn(10,20),0,100);
+  if(injuryActive()){
+    S.injury.weeksLeft--;
+    if(S.injury.weeksLeft<=0){S.injury=null;addEvent('Recuperado da lesão.');}
+  }
+  // Simula jogos da liga
+  S.teams.forEach((t,i)=>{
+    if(i!==S.ti){
+      if(chance(.5+(t.s-70)/90))t.w++;else t.l++;
+    }
+  });
+  if(S.week>18){endSeason(false);return}
+  pickOpp();
+  randomEvent();
+  save();ui();
+  toast('Semana pulada (bye).');
+}
+
+/* ========== SPONSORS ========== */
+function trySponsorOffer(){
+  const avail=SPONSORS.filter(sp=>S.fame>=sp.minFame&&!S.sponsors.find(x=>x.name===sp.name)&&S.gp>=sp.req);
+  if(!avail.length)return;
+  const sp=pk(avail);
+  S.sponsorOffer=sp;
+  addEvent('Oferta de patrocínio: '+sp.name);
+}
+function acceptSponsor(){
+  if(!S.sponsorOffer)return;
+  const sp=S.sponsorOffer;
+  S.sponsors.push({name:sp.name,pay:sp.pay});
+  S.money+=sp.pay;
+  S.fame+=rn(2,6);
+  addEvent('Assinou com '+sp.name+' (+'+mil(sp.pay)+')');
+  S.sponsorOffer=null;save();ui();
+}
+function rejectSponsor(){S.sponsorOffer=null;save();ui()}
+
+function addEvent(txt){
+  S.events.unshift({t:txt,y:S.yr,a:S.age});
+  S.events=S.events.slice(0,40);
+}
+
+function randomEvent(){
+  if(chance(.4))return;
+  const pool=[
+    ()=>{S.money+=rn(0.1,0.8);addEvent('Apareceu em comercial de TV.');},
+    ()=>{S.fame+=rn(1,4);S.fans+=rn(50,200);addEvent('Highlight viralizou nas redes.');},
+    ()=>{S.morale=cl(S.morale-rn(4,10),10,100);addEvent('Crítica da imprensa esportiva.');},
+    ()=>{S.form=cl(S.form+rn(3,8),20,100);addEvent('Camp de verão rendeu frutos.');},
+    ()=>{if(!S.life.partner&&chance(.35)){S.life.partner=['Alex','Jordan','Taylor','Morgan','Casey'][rn(0,4)]+' '+(pk(['Smith','Johnson','Williams','Brown','Davis']));addEvent('Começou a namorar '+S.life.partner);S.morale=cl(S.morale+6,10,100)}},
+    ()=>{if(S.life.partner&&chance(.12)){addEvent('Terminou com '+S.life.partner);S.life.partner=null;S.morale=cl(S.morale-8,10,100)}},
+  ];
+  pk(pool)();
+}
+
+function retire(reason){
+  S.ret=true;
+  S.retireReason=reason||'Decisão própria';
+  addEvent('Aposentadoria: '+S.retireReason);
+  save();tab='his';ui();
+  showRetireReport();
+}
+
+function showRetireReport(){
+  const s=S,P=POS[s.pos];
+  modal(`<h2>🏁 Fim de carreira</h2>
+    <p class="m">${s.name}${s.nick?' “'+s.nick+'”':''} · ${P[0]}</p>
+    <div class="grid" style="margin-top:12px">
+      <div class="st"><small>Temporadas</small><b>${s.yr-1}</b></div>
+      <div class="st"><small>Super Bowls</small><b>${s.champs}</b></div>
+      <div class="st"><small>Pro Bowls</small><b>${s.pb}</b></div>
+      <div class="st"><small>MVPs</small><b>${s.mvp}</b></div>
+      <div class="st"><small>Pico OVR</small><b>${s.peakOvr}</b></div>
+      <div class="st"><small>Ganhos</small><b>${mil(s.money)}</b></div>
+    </div>
+    <p class="m" style="margin-top:10px">Carreira: ${P[3].map((l,i)=>`${s.tot[i]} ${l.toLowerCase()}`).join(' · ')}</p>
+    <p>Motivo: <b>${s.retireReason}</b> · Idade: ${s.age}</p>
+    <button class="pri" onclick="closeM()">Fechar</button>
+    <button onclick="if(confirm('Apagar e começar outra?')){S=null;localStorage.removeItem(KEY);closeM();ui()}">Nova carreira</button>`);
+}
+
+/* ========== UI HELPERS ========== */
+function modal(h){$('bx').innerHTML=h;$('ov').hidden=false}
+function closeM(){$('ov').hidden=true;ui()}
+function toast(msg){
+  const t=document.createElement('div');
+  t.style.cssText='position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#25221a;border:1px solid #f5c542;padding:10px 18px;border-radius:12px;z-index:99;font-size:14px;max-width:90%;box-shadow:0 8px 24px #0008';
+  t.textContent=msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),2600);
+}
+
+function go(id){
+  if(!S)return;
+  if(S.ret&&id!=='his'&&id!=='life')return;
+  tab=id;ui();
+}
+
+function renderNav(){
+  const n=$('nav');
+  if(!S){n.innerHTML='';return}
+  if(S.ret){
+    n.innerHTML=`<button type="button" class="mainNavItem active" data-p="his">
+      <span class="navIcon">📜</span>
+      <span class="navText"><b>Histórico</b><small>Carreira encerrada</small></span>
+    </button>
+    <button type="button" class="mainNavItem" onclick="go('life')">
+      <span class="navIcon">❤️</span>
+      <span class="navText"><b>Vida</b><small>Resumo final</small></span>
+    </button>`;
+    return;
+  }
+  n.innerHTML=NAV_ITEMS.map(([id,icon,label,desc])=>`
+    <button type="button" class="mainNavItem ${tab===id?'active':''}" data-p="${id}"
+      onclick="go('${id}')" title="${label}">
+      <span class="navIcon">${icon}</span>
+      <span class="navText"><b>${label}</b><small>${desc}</small></span>
+      <span class="navChevron">›</span>
+    </button>
+  `).join('');
+}
+
+function renderBrand(){
+  const sub=$('brandSub'),stats=$('brandStats'),fab=$('floatingAdvance');
+  if(!S){
+    sub.textContent='Simulador de futebol americano · carreira completa';
+    stats.innerHTML='';fab.classList.remove('show');return;
+  }
+  if(S.ret){
+    sub.textContent=`${S.name} · Aposentado · ${S.champs} SB · ${S.pb} PB`;
+    stats.innerHTML=`<span class="brand-pill">🏁 Fim</span>`;
+    fab.classList.remove('show');return;
+  }
+  const mine=me();
+  sub.textContent=`${S.name}${S.nick?' “'+S.nick+'”':''} · ${POS[S.pos][0]} · ${mine.n}`;
+  stats.innerHTML=`
+    <span class="brand-pill">${mine.w}-${mine.l}</span>
+    <span class="brand-pill">OVR <b>${ovr()}</b></span>
+    <span class="brand-pill">S${S.week<=18?S.week:18}</span>
+    <span class="brand-pill">${mil(S.money)}</span>
+  `;
+  fab.classList.toggle('show',tab==='car'&&S.phase==='reg'&&!S.ret);
+}
+
+/* ========== TELAS ========== */
+function ui(){
+  const m=$('m');
+  renderNav();
+  renderBrand();
+
+  if(!S){
+    m.innerHTML=`<div class="page active">
+      <div class="card">
+        <h2>🏈 Crie seu jogador</h2>
+        <p class="m">Entre no Draft, jogue a temporada regular (18 semanas), dispute os playoffs e conquiste o Super Bowl. Gerencie treinos, lesões, contratos e patrocínios.</p>
+        <div class="grid" style="margin-top:12px">
+          <div><label class="m">Nome</label><input id="fn" placeholder="Seu jogador"></div>
+          <div><label class="m">Apelido</label><input id="fk" placeholder="Opcional"></div>
+          <div><label class="m">Posição</label>
+            <select id="fp">${Object.keys(POS).map(k=>`<option value="${k}">${k} · ${POS[k][0]}</option>`).join('')}</select>
+          </div>
+          <div><label class="m">Time que te draftou</label>
+            <select id="ft">
+              <option value="-1">🎲 Aleatório</option>
+              ${TEAMS.map((t,i)=>`<option value="${i}">${t.n} (${t.conf} ${t.div})</option>`).join('')}
+            </select>
+          </div>
+        </div>
+        <p style="margin-top:16px"><button class="pri" onclick="newGame()">Declarar-se para o Draft</button></p>
+      </div>
+    </div>`;
+    return;
+  }
+
+  const s=S,P=POS[s.pos],mine=me();
+  const st=(l,v,cls)=>`<div class="st"><small>${l}</small><b class="${cls||''}">${v}</b></div>`;
+
+  if(s.ret&&tab!=='his'&&tab!=='life')tab='his';
+
+  let html='';
+
+  /* ---- CARREIRA ---- */
+  if(tab==='car'){
+    const oppT=op();
+    html=`<div class="page active">
+      <div class="grid" style="margin-bottom:12px">
+        ${st('Nível',ovr())}
+        ${st('Idade',s.age)}
+        ${st('Temporada',s.yr)}
+        ${st('Campanha',`${mine.w}-${mine.l}`)}
+        ${st('Salário',mil(s.sal))}
+        ${st('Contrato',s.cy+' ano(s)')}
+        ${st('Ganhos',mil(s.money))}
+        ${st('Títulos',`${s.champs} SB · ${s.pb} PB · ${s.mvp} MVP`)}
+        ${st('Forma',s.form+'%',s.form>=70?'w':s.form>=45?'y':'d')}
+        ${st('Moral',s.morale+'%',s.morale>=70?'w':s.morale>=45?'y':'d')}
+        ${st('Fadiga',s.fatigue+'%',s.fatigue<=30?'w':s.fatigue<=60?'y':'d')}
+        ${st('Fama',s.fame)}
+      </div>
+      ${injuryActive()?`<div class="notice bad">🩹 Lesão: <b>${s.injury.type}</b> — ${s.injury.weeksLeft} semana(s)</div>`:''}
+      ${s.sponsorOffer?`<div class="notice good">💼 Oferta: <b>${s.sponsorOffer.name}</b> (${mil(s.sponsorOffer.pay)})
+        <button class="pri" style="margin-left:8px" onclick="acceptSponsor()">Aceitar</button>
+        <button onclick="rejectSponsor()">Recusar</button></div>`:''}
+
+      <div class="card">
+        <h2>${s.ret?'Carreira encerrada':s.phase==='po'?'Playoffs · '+(RD[s.po.round-1]||''):'Semana '+Math.min(s.week,18)+' de 18'}</h2>
+        ${s.ret?`
+          <p class="m">Você se aposentou aos ${s.age} anos.</p>
+          <button class="pri" onclick="showRetireReport()">Relatório final</button>
+          <button onclick="if(confirm('Nova carreira?')){S=null;localStorage.removeItem(KEY);ui()}">Nova carreira</button>
+        `:`
+          <div class="row"><b>vs ${oppT.n}</b><span class="m">força ${oppT.s} · ${oppT.w}-${oppT.l} · ${oppT.conf}</span></div>
+          <p class="m">Stats da temporada: ${P[3].map((l,i)=>`${l} ${s.ss[i]}`).join(' · ')} em ${s.gp} jogo(s).</p>
+          ${injuryActive()?`<p class="d">Você está lesionado e não pode jogar.</p>
+            <button onclick="rest()">😴 Descansar / recuperar</button>`:`
+            <p class="m">Escolha o plano de jogo:</p>
+            <div class="acts">
+              ${Object.keys(PLANS).map(k=>`<button class="${k==='eq'?'pri':''}" onclick="play('${k}')">${PLANS[k]}</button>`).join('')}
+            </div>
+            <div class="acts" style="margin-top:8px">
+              <button onclick="rest()">😴 Descansar</button>
+              <button onclick="go('tre')">🏋️ Treinar</button>
+            </div>
+          `}
+        `}
+      </div>
+
+      <div class="card">
+        <h2>Atributos</h2>
+        <div class="grid">${P[1].map((l,i)=>`<div class="st"><small>${l}</small><b>${s.a[i]}</b>
+          <div class="bar"><i style="width:${s.a[i]}%"></i></div></div>`).join('')}</div>
+        <p class="m" style="margin-top:8px">${s.draft}</p>
+      </div>
+    </div>`;
+  }
+
+  /* ---- TREINO ---- */
+  if(tab==='tre'){
+    html=`<div class="page active">
+      <div class="card">
+        <h2>🏋️ Treino da semana</h2>
+        <p class="m">${s.trainedThisWeek?'Treino da semana já feito.':'Você pode treinar <b>1 atributo</b> por semana.'} Fadiga: ${s.fatigue}%.</p>
+        ${P[1].map((l,i)=>`
+          <div class="row">
+            <span>${l}: <b>${s.a[i]}</b>
+              <div class="bar" style="width:110px;display:inline-block;margin-left:8px;vertical-align:middle">
+                <i style="width:${s.a[i]}%"></i>
+              </div>
+            </span>
+            <button ${s.trainedThisWeek||s.ret||injuryActive()?'disabled':''} onclick="trainA(${i})">Treinar</button>
+          </div>`).join('')}
+        <div class="acts" style="margin-top:16px">
+          <button onclick="rest()">😴 Descansar (recupera fadiga/lesão)</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Dicas</h3>
+        <p class="m">Jogadores jovens evoluem mais fácil. Após os 30 anos o declínio acelera.
+        Fadiga alta prejudica o desempenho no jogo. Descanse entre jogos difíceis.</p>
+      </div>
+    </div>`;
+  }
+
+  /* ---- TABELA ---- */
+  if(tab==='tab'){
+    const sorted=S.teams.map((t,i)=>({t,i})).sort((a,b)=>b.t.w-a.t.w||b.t.s-a.t.s);
+    const afc=sorted.filter(x=>x.t.conf==='AFC');
+    const nfc=sorted.filter(x=>x.t.conf==='NFC');
+    const renderConf=(list,name)=>`
+      <h3>${name}</h3>
+      ${list.map((x,k)=>`
+        <div class="row ${x.i===s.ti?'me':''}">
+          <span>${k+1}. ${x.t.n}${k===6?' <span class="m">(corte playoffs)</span>':''}</span>
+          <b>${x.t.w}-${x.t.l}</b>
+        </div>`).join('')}`;
+    html=`<div class="page active">
+      <div class="card">
+        <h2>📊 Classificação</h2>
+        <p class="m">Top 7 de cada conferência vão aos playoffs.</p>
+        ${renderConf(afc,'AFC')}
+        ${renderConf(nfc,'NFC')}
+      </div>
+    </div>`;
+  }
+
+  /* ---- PATROCÍNIOS ---- */
+  if(tab==='spon'){
+    html=`<div class="page active">
+      <div class="card">
+        <h2>💼 Patrocínios</h2>
+        <p class="m">Fama: <b>${s.fame}</b>. Pagamentos anuais somados ao salário.</p>
+        ${s.sponsors.length?s.sponsors.map(sp=>`
+          <div class="row"><b>${sp.name}</b><span class="w">${mil(sp.pay)} / ano</span></div>
+        `).join(''):'<p class="m">Nenhum patrocinador ainda.</p>'}
+        ${s.sponsorOffer?`<div class="notice good">Oferta: <b>${s.sponsorOffer.name}</b> — ${mil(s.sponsorOffer.pay)}
+          <br><button class="pri" onclick="acceptSponsor()">Aceitar</button> <button onclick="rejectSponsor()">Recusar</button></div>`:''}
+        <h3>Marcas disponíveis</h3>
+        ${SPONSORS.map(sp=>{
+          const has=s.sponsors.find(x=>x.name===sp.name);
+          const ok=s.fame>=sp.minFame&&s.gp>=sp.req;
+          return `<div class="row"><span>${sp.name} <small class="m">(fama ${sp.minFame}+)</small></span>
+            <span class="${has?'w':ok?'y':'m'}">${has?'Ativo':ok?'Elegível':'Bloqueado'} · ${mil(sp.pay)}</span></div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }
+
+  /* ---- HISTÓRICO ---- */
+  if(tab==='his'){
+    html=`<div class="page active">
+      <div class="card">
+        <h2>📜 Histórico de temporadas</h2>
+        ${s.hist.length?s.hist.map(h=>`
+          <div class="row">
+            <span><b>T${h.y}</b> · ${h.team} · ${h.w}-${h.l} ·
+              <span class="${h.res.includes('Campeão')?'w':'m'}">${h.res}</span>
+              ${h.pb?' ⭐':''}${h.mvp?' 🏅':''}${h.opoy?' 🟠':''}${h.dpoy?' 🔵':''}
+            </span>
+            <span class="m">${P[3].map((l,i)=>`${h.ss[i]} ${l.slice(0,3)}`).join(', ')}</span>
+          </div>`).join(''):'<p class="m">Nenhuma temporada concluída.</p>'}
+        <p class="m" style="margin-top:10px">Carreira total: ${P[3].map((l,i)=>`${s.tot[i]} ${l.toLowerCase()}`).join(' · ')}</p>
+      </div>
+      <div class="card">
+        <h3>Eventos</h3>
+        ${s.events.length?s.events.slice(0,20).map(e=>`
+          <div class="row"><span>${e.t}</span><span class="m">T${e.y} · ${e.a} anos</span></div>
+        `).join(''):'<p class="m">Nenhum evento.</p>'}
+      </div>
+      <div class="card">
+        <p>
+          ${!s.ret?`<button class="danger" onclick="if(confirm('Aposentar agora?'))retire('Decisão própria')">Aposentar-se</button>`:''}
+          <button onclick="if(confirm('Apagar carreira?')){S=null;localStorage.removeItem(KEY);ui()}">Nova carreira</button>
+        </p>
+      </div>
+    </div>`;
+  }
+
+  /* ---- VIDA ---- */
+  if(tab==='life'){
+    html=`<div class="page active">
+      <div class="card">
+        <h2>❤️ Vida pessoal</h2>
+        <div class="grid">
+          ${st('Parceiro(a)',s.life.partner||'Solteiro(a)')}
+          ${st('Filhos',s.life.kids)}
+          ${st('Moral',s.morale+'%')}
+          ${st('Fãs',Math.round(s.fans).toLocaleString('pt-BR'))}
+        </div>
+        <p class="m" style="margin-top:12px">Eventos acontecem ao longo das temporadas.</p>
+      </div>
+      <div class="card">
+        <h3>Prêmios e títulos</h3>
+        <div class="grid">
+          ${st('Super Bowls',s.champs)}
+          ${st('Pro Bowls',s.pb)}
+          ${st('MVPs',s.mvp)}
+          ${st('OPOY',s.opoy)}
+          ${st('DPOY',s.dpoy)}
+          ${st('Pico OVR',s.peakOvr)}
+        </div>
+      </div>
+      <div class="card">
+        <h3>Contrato atual</h3>
+        <p><b>${mine.n}</b> · ${mil(s.sal)}/ano · ${s.cy} ano(s) restante(s)</p>
+        <p class="m">${s.draft}</p>
+      </div>
+    </div>`;
+  }
+
+  m.innerHTML=html;
+}
+
+ui();
+</script>
+</body>
+</html>
