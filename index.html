@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<link rel="icon" type="image/x-icon" href="favicon.ico">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#060914">
@@ -45,12 +44,13 @@ section.in{animation:up .55s cubic-bezier(.2,.8,.2,1)}
 .hero p{margin:14px 0 0;color:#cdd6e4;font-size:17px;max-width:44ch}
 .hint{margin-top:14px;color:var(--m);font-size:13px}
 .orbit{position:relative;width:min(430px,78vw);aspect-ratio:1;margin:30px auto}
-.ol{position:absolute;inset:0;border-radius:50%;border:1px dashed #ffffff2b}
-.ol.b{inset:17%;border-style:solid;border-color:#ffffff12}
-.core{position:absolute;inset:27%}
-.arm{position:absolute;inset:0;transform:rotate(calc(var(--a) + var(--rot,0deg)))}
-.sat{position:absolute;left:50%;top:0;width:74px;height:74px;margin:-37px 0 0 -37px;border:0;border-radius:50%;cursor:pointer;font:inherit;font-size:32px;color:inherit;background:radial-gradient(circle at 32% 28%,color-mix(in srgb,var(--c) 70%,#fff),var(--c) 55%,color-mix(in srgb,var(--c) 40%,#000));box-shadow:0 0 30px -4px var(--c);transform:rotate(calc(-1*(var(--a) + var(--rot,0deg))));transition:scale .25s}
+.ol{position:absolute;inset:0;border-radius:50%;border:1px dashed #ffffff2b;pointer-events:none}
+.ol.b{inset:17%;border-style:solid;border-color:#ffffff12;pointer-events:none}
+.core{position:absolute;inset:27%;pointer-events:none;z-index:1}
+.arm{position:absolute;inset:0;transform:rotate(calc(var(--a) + var(--rot,0deg)));pointer-events:none;z-index:2}
+.sat{position:absolute;left:50%;top:0;width:74px;height:74px;margin:-37px 0 0 -37px;border:0;border-radius:50%;cursor:pointer;font:inherit;font-size:32px;color:inherit;background:radial-gradient(circle at 32% 28%,color-mix(in srgb,var(--c) 70%,#fff),var(--c) 55%,color-mix(in srgb,var(--c) 40%,#000));box-shadow:0 0 30px -4px var(--c);transform:rotate(calc(-1*(var(--a) + var(--rot,0deg))));transition:scale .25s;pointer-events:auto;z-index:3;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .sat:hover,.sat:focus-visible{scale:1.2}
+.sat span{pointer-events:none}
 .sat span{position:absolute;top:100%;left:50%;translate:-50% 4px;font-size:12px;font-weight:800;white-space:nowrap;text-shadow:0 2px 6px #000}
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px}
 .card{--c:#6a8dff;--rx:0deg;--ry:0deg;--mx:50%;--my:0%;position:relative;display:flex;flex-direction:column;gap:11px;padding:22px;border-radius:24px;overflow:hidden;background:linear-gradient(160deg,#1b2338ee,#0e1424ee);border:1px solid color-mix(in srgb,var(--c) 38%,#ffffff14);transform:perspective(900px) rotateX(var(--rx)) rotateY(var(--ry));transition:transform .18s,box-shadow .3s}
@@ -232,7 +232,26 @@ addEventListener('keydown',e=>{
   if(e.key==='Escape'&&location.hash)location.hash='';
   if(cur&&(e.key==='ArrowRight'||e.key==='ArrowLeft')){const n=N();location.hash=G[(G.indexOf(cur)+(e.key==='ArrowRight'?1:n-1))%n].id}
 });
-$('orbit').addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b){e.preventDefault();goGame(b.dataset.go)}});
+(function(){
+  const orb=$('orbit');
+  if(!orb)return;
+  function hitSat(e){
+    // 1) closest data-go
+    let b=e.target&&e.target.closest&&e.target.closest('[data-go]');
+    if(b&&b.dataset.go){e.preventDefault();e.stopPropagation();goGame(b.dataset.go);return true}
+    // 2) fallback: elementFromPoint (transform rotativo às vezes quebra o target)
+    const x=e.clientX, y=e.clientY;
+    if(x==null||y==null)return false;
+    const stack=(document.elementsFromPoint?document.elementsFromPoint(x,y):[document.elementFromPoint(x,y)]).filter(Boolean);
+    for(const el of stack){
+      const sat=el.closest&&el.closest('.sat[data-go]');
+      if(sat&&sat.dataset.go){e.preventDefault();e.stopPropagation();goGame(sat.dataset.go);return true}
+    }
+    return false;
+  }
+  orb.addEventListener('click',hitSat);
+  orb.addEventListener('pointerup',e=>{ if(e.pointerType==='touch'||e.pointerType==='pen') hitSat(e); });
+})();
 /* interação: cor do ambiente, brilho do cursor, tilt dos cards, estrelas */
 document.addEventListener('pointerover',e=>{const t=e.target.closest('[data-c]');if(t){setC(t.dataset.c);hv=1;hc=t.dataset.c}});
 document.addEventListener('pointerout',e=>{if(!(e.relatedTarget&&e.relatedTarget.closest&&e.relatedTarget.closest('[data-c]'))){setC(base());hv=0}});
